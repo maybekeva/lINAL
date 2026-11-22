@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр по Линейной Алгебре — Теоретический опрос (10 мин)</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #f0f2f6;
+    --border: #e1e5ed;
+    --text: #18202c;
+    --muted: #5a6578;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --green: #16a34a;
+    --green-soft: #f0fdf4;
+    --amber: #d97706;
+    --amber-soft: #fffbeb;
+    --red: #dc2626;
+    --red-soft: #fef2f2;
+    --purple: #7c3aed;
+    --purple-soft: #f5f3ff;
+    --teal: #0d9488;
+    --teal-soft: #f0fdfa;
+    --shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+    --radius: 14px;
+    --math-bg: #f8fafc;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f131a;
+    --surface: #171d28;
+    --surface-2: #1f2735;
+    --border: #2c374b;
+    --text: #e7ecf4;
+    --muted: #98a4b8;
+    --accent: #60a5fa;
+    --accent-soft: rgba(96, 165, 250, 0.14);
+    --accent-hover: #93c5fd;
+    --green: #4ade80;
+    --green-soft: rgba(74, 222, 128, 0.12);
+    --amber: #fbbf24;
+    --amber-soft: rgba(251, 191, 36, 0.12);
+    --red: #f87171;
+    --red-soft: rgba(248, 113, 113, 0.13);
+    --purple: #c084fc;
+    --purple-soft: rgba(192, 132, 252, 0.13);
+    --teal: #2dd4bf;
+    --teal-soft: rgba(45, 212, 191, 0.12);
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --math-bg: #121720;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    transition: background .2s, color .2s;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  .header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-family: Cambria, Georgia, serif;
+    font-size: 18px;
+  }
+  .brand h1 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.2;
+  }
+  .brand span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .nav-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tab-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 13px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { background: var(--surface-2); color: var(--text); }
+  .tab-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: rgba(37,99,235,.22);
+  }
+  .icon-btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    padding: 7px 11px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .icon-btn:hover { background: var(--surface-2); }
+
+  /* Layout */
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 16px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .stat-val { font-size: 24px; font-weight: 800; margin-top: 2px; }
+  .progress-track {
+    height: 7px;
+    background: var(--surface-2);
+    border-radius: 99px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #16a34a);
+    border-radius: 99px;
+    transition: width .3s ease;
+  }
+
+  /* Controls & Filters */
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .search-input {
+    flex: 1 1 230px;
+    padding: 9px 13px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  select.filter-select {
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13.5px;
+    cursor: pointer;
+  }
+
+  /* Buttons */
+  .btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    padding: 9px 15px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-hover); color: #fff; }
+  .btn-green { background: var(--green-soft); color: var(--green); border-color: rgba(22,163,74,.35); }
+  .btn-green:hover { background: var(--green); color: #fff; }
+  .btn-amber { background: var(--amber-soft); color: var(--amber); border-color: rgba(217,119,6,.35); }
+  .btn-amber:hover { background: var(--amber); color: #fff; }
+  .btn-red { background: var(--red-soft); color: var(--red); border-color: rgba(220,38,38,.35); }
+  .btn-red:hover { background: var(--red); color: #fff; }
+  .btn-sm { padding: 5px 10px; font-size: 12.5px; border-radius: 8px; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    white-space: nowrap;
+  }
+  .badge-def { background: var(--accent-soft); color: var(--accent); }
+  .badge-thm { background: var(--purple-soft); color: var(--purple); }
+  .badge-prop { background: var(--teal-soft); color: var(--teal); }
+  .badge-props { background: var(--amber-soft); color: var(--amber); }
+  .badge-page { background: var(--surface-2); color: var(--muted); font-weight: 600; }
+  .badge-warn { background: var(--red-soft); color: var(--red); }
+
+  /* Reference Cards */
+  .item-list { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--border);
+    transition: border-color .2s;
+  }
+  .card[data-status="known"] { border-left-color: var(--green); }
+  .card[data-status="review"] { border-left-color: var(--amber); }
+  .card[data-status="hard"] { border-left-color: var(--red); }
+
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .card-title-wrap { flex: 1 1 300px; }
+  .card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .card-title { margin: 0; font-size: 16px; font-weight: 700; }
+  .card-body {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
+  .card-body.collapsed { display: none; }
+
+  .status-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+  .pill {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    padding: 4px 9px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .pill.active-hard { background: var(--red-soft); color: var(--red); border-color: var(--red); }
+  .pill.active-review { background: var(--amber-soft); color: var(--amber); border-color: var(--amber); }
+  .pill.active-known { background: var(--green-soft); color: var(--green); border-color: var(--green); }
+
+  .criteria-box {
+    margin-top: 12px;
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .criteria-title { font-weight: 700; margin-bottom: 5px; font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; }
+  .criteria-box ul { margin: 0; padding-left: 18px; }
+  .criteria-box li { margin: 3px 0; }
+
+  .note-box {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--amber-soft);
+    border: 1px solid rgba(217,119,6,.28);
+    font-size: 13px;
+  }
+
+  /* Flashcards */
+  .fc-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .fc-stage {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow);
+    min-height: 330px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .fc-prompt {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 14px 0 10px;
+    line-height: 1.4;
+  }
+  .fc-hints {
+    margin: 10px 0;
+    padding: 10px 14px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    font-size: 13.5px;
+    display: none;
+  }
+  .fc-hints.show { display: block; }
+  .fc-answer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px dashed var(--border);
+    display: none;
+  }
+  .fc-answer.show { display: block; }
+  .fc-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .kbd {
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--muted);
+    font-family: monospace;
+  }
+
+  /* Quiz Simulator */
+  .quiz-setup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .quiz-header-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    top: 66px;
+    z-index: 40;
+    box-shadow: var(--shadow);
+  }
+  .timer-display {
+    font-size: 28px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .04em;
+    color: var(--accent);
+  }
+  .timer-display.warn { color: var(--amber); }
+  .timer-display.danger { color: var(--red); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+
+  .quiz-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .quiz-textarea {
+    width: 100%;
+    min-height: 92px;
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+  }
+  .rubric-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    margin: 4px 0;
+    background: var(--bg);
+    cursor: pointer;
+    font-size: 13.5px;
+    user-select: none;
+  }
+  .rubric-check input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .score-banner {
+    background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(22,163,74,.12));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .score-big { font-size: 32px; font-weight: 800; }
+
+  .module-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 8px;
+    margin: 12px 0 18px;
+  }
+  .mod-check-lbl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* Corrections table */
+  .diff-grid { display: grid; gap: 12px; }
+  .diff-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 15px 18px;
+    box-shadow: var(--shadow);
+  }
+  .diff-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  @media (max-width: 680px) { .diff-cols { grid-template-columns: 1fr; } }
+  .diff-bad {
+    background: var(--red-soft);
+    border: 1px solid rgba(220,38,38,.25);
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-size: 13.5px;
+  }
+  .diff-good {
+    background: var(--green-soft);
+    border: 1px solid rgba(22,163,74,.28);
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-size: 13.5px;
+  }
+
+  /* Native Textbook Math Typography (100% Offline) */
+  .m {
+    font-family: "Cambria Math", "STIX Two Math", "Times New Roman", Georgia, serif;
+    font-size: 1.07em;
+    letter-spacing: .01em;
+  }
+  .m i, .mi { font-style: italic; }
+  .mb {
+    margin: 10px 0;
+    padding: 11px 16px;
+    background: var(--math-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    text-align: center;
+    font-family: "Cambria Math", "STIX Two Math", "Times New Roman", Georgia, serif;
+    font-size: 1.12em;
+    line-height: 1.7;
+  }
+  .ov { text-decoration: overline; }
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 3px;
+    line-height: 1.15;
+    font-size: .92em;
+  }
+  .frac > span:first-child {
+    border-bottom: 1.3px solid currentColor;
+    padding: 0 4px 2px;
+  }
+  .frac > span:last-child { padding: 2px 4px 0; }
+
+  .sumop {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 5px;
+    line-height: 1;
+  }
+  .sumop .s-top { font-size: .68em; margin-bottom: 1px; }
+  .sumop .s-sym { font-size: 1.55em; line-height: .95; }
+  .sumop .s-bot { font-size: .68em; margin-top: 2px; }
+
+  .mat, .det, .perm {
+    display: inline-table;
+    vertical-align: middle;
+    border-collapse: collapse;
+    margin: 0 4px;
+    line-height: 1.25;
+  }
+  .mat td, .det td, .perm td {
+    padding: 1px 6px;
+    text-align: center;
+    font-size: .92em;
+  }
+  .mat, .perm {
+    border-left: 1.6px solid currentColor;
+    border-right: 1.6px solid currentColor;
+    border-radius: 8px;
+  }
+  .det {
+    border-left: 1.6px solid currentColor;
+    border-right: 1.6px solid currentColor;
+  }
+  .cases {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 4px;
+  }
+  .cases-brace {
+    font-size: 2.3em;
+    font-weight: 300;
+    line-height: 1;
+    margin-right: 5px;
+  }
+  .cases-rows {
+    text-align: left;
+    font-size: .93em;
+    line-height: 1.45;
+  }
+  .ans-list { margin: 6px 0; padding-left: 20px; }
+  .ans-list li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">Δ</div>
+      <div>
+        <h1>Линейная алгебра — Тренажёр к опросу</h1>
+        <span>Все 61 стр. лекций • Формулировки определений и теорем • 100% оффлайн</span>
+      </div>
+    </div>
+
+    <div class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="ref">📚 Справочник</button>
+      <button class="tab-btn" data-tab="cards">🃏 Карточки</button>
+      <button class="tab-btn" data-tab="quiz">⏱️ Билет на 10 мин</button>
+      <button class="tab-btn" data-tab="fixes">⚠️ Поправки конспекта</button>
+    </div>
+
+    <button class="icon-btn" id="themeToggle" title="Переключить тему">🌙</button>
+  </div>
+</header>
+
+<main>
+  <!-- Stats Bar -->
+  <section class="stats-bar" id="statsBar">
+    <div class="stat-card">
+      <div class="stat-label">Всего пунктов</div>
+      <div class="stat-val" id="stTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Выучено идеально</div>
+      <div class="stat-val" style="color:var(--green)" id="stKnown">0</div>
+      <div class="progress-track"><div class="progress-fill" id="stProg" style="width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Повторить / Сложно</div>
+      <div class="stat-val" style="color:var(--amber)" id="stReview">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Не начато</div>
+      <div class="stat-val" style="color:var(--muted)" id="stUnseen">0</div>
+    </div>
+  </section>
+
+  <!-- TAB 1: REFERENCE -->
+  <section class="panel active" id="panel-ref">
+    <div class="controls">
+      <input type="text" class="search-input" id="refSearch" placeholder="Поиск: Лаплас, Крамер, базис, группа, цикл, подпространство...">
+      <select class="filter-select" id="refModule">
+        <option value="all">Все темы (1–7)</option>
+      </select>
+      <select class="filter-select" id="refType">
+        <option value="all">Все типы</option>
+        <option value="def">Определения</option>
+        <option value="thm">Теоремы</option>
+        <option value="prop">Леммы / Предложения / Следствия</option>
+        <option value="props">Свойства</option>
+      </select>
+      <select class="filter-select" id="refStatus">
+        <option value="all">Любой статус</option>
+        <option value="unseen">Не начато</option>
+        <option value="hard">Не знаю</option>
+        <option value="review">Повторить</option>
+        <option value="known">Выучено</option>
+      </select>
+      <button class="btn btn-sm" id="toggleAllBtn">Свернуть всё</button>
+    </div>
+    <div class="item-list" id="refList"></div>
+  </section>
+
+  <!-- TAB 2: FLASHCARDS -->
+  <section class="panel" id="panel-cards">
+    <div class="fc-wrap">
+      <div class="controls" style="justify-content:space-between;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <select class="filter-select" id="fcModule"><option value="all">Все темы</option></select>
+          <select class="filter-select" id="fcType">
+            <option value="all">Все типы</option>
+            <option value="def">Только определения</option>
+            <option value="thm">Только теоремы</option>
+            <option value="prop">Леммы / Предл. / След.</option>
+            <option value="props">Только свойства</option>
+          </select>
+          <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" id="fcOnlyWeak"> Только невыученные
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span id="fcCounter" style="font-size:13.5px;font-weight:700;color:var(--muted);">0 / 0</span>
+          <button class="btn btn-sm" id="fcShuffle">🔀 Перемешать</button>
+        </div>
+      </div>
+
+      <div class="fc-stage" id="fcStage"></div>
+    </div>
+  </section>
+
+  <!-- TAB 3: 10-MINUTE QUIZ SIMULATOR -->
+  <section class="panel" id="panel-quiz">
+    <div id="quizSetupView" class="quiz-setup">
+      <h2 style="margin-top:0;">⏱️ Симулятор письменного опроса на 10 минут</h2>
+      <p style="color:var(--muted);margin-top:-4px;">
+        Имитирует формат преподавателя: случайный билет только из формулировок определений и теорем + таймер + строгая самопроверка по критериям (кванторы, области значений, граничные условия).
+        <strong>Совет:</strong> пиши формулировки от руки на листке бумаги, пока идёт таймер, а потом сверяй по пунктам!
+      </p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;">
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px;">Формат билета</label>
+          <select class="filter-select" id="quizPreset">
+            <option value="std">Стандартный (2 определения + 2 теоремы/св-ва) — 10 мин</option>
+            <option value="ext">Расширенный (3 определения + 3 теоремы/св-ва) — 15 мин</option>
+            <option value="defs">Только определения (4 вопроса) — 8 мин</option>
+            <option value="thms">Только теоремы и утверждения (4 вопроса) — 10 мин</option>
+            <option value="weak">Из моих слабых мест (до 4 вопросов) — 10 мин</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="font-size:12.5px;font-weight:700;color:var(--muted);">Темы, включённые в билет:</div>
+      <div class="module-checks" id="quizModChecks"></div>
+
+      <button class="btn btn-primary" id="startQuizBtn" style="font-size:15px;padding:11px 22px;">🚀 Сгенерировать билет и запустить таймер</button>
+    </div>
+
+    <div id="quizActiveView" style="display:none;">
+      <div class="quiz-header-bar">
+        <div>
+          <div style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;">Письменный опрос</div>
+          <div id="quizTicketTitle" style="font-weight:700;font-size:15px;">Билет сформирован</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="timer-display" id="quizTimer">10:00</div>
+          <button class="btn btn-sm" id="quizPauseBtn">⏸ Пауза</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="finishQuizBtn">✅ Завершить и проверить</button>
+          <button class="btn" id="cancelQuizBtn">Выйти</button>
+        </div>
+      </div>
+
+      <div id="quizScoreArea"></div>
+      <div id="quizQuestionsArea"></div>
+    </div>
+  </section>
+
+  <!-- TAB 4: NOTEBOOK CORRECTIONS -->
+  <section class="panel" id="panel-fixes">
+    <div style="margin-bottom:14px;">
+      <h2 style="margin:0 0 6px;">⚠️ Поправки к рукописному конспекту (12 ловушек)</h2>
+      <p style="margin:0;color:var(--muted);font-size:14px;">
+        При сверке 61 страницы твоих сканов нашлись мелкие описки, которые часто бывают при быстрой записи лекций.
+        На письменном опросе преподаватель за такое снижает баллы — обязательно прогляди перед парой!
+      </p>
+    </div>
+    <div class="diff-grid" id="fixesList"></div>
+  </section>
+</main>
+
+<script>
+const MODULES = [
+  { id: 1, name: "1. Определители малых порядков (стр. 1–4)" },
+  { id: 2, name: "2. Перестановки, подстановки и группы (стр. 5–18)" },
+  { id: 3, name: "3. Определитель n-го порядка и свойства (стр. 19–25)" },
+  { id: 4, name: "4. Миноры, Лаплас и правило Крамера (стр. 26–35)" },
+  { id: 5, name: "5. Матрицы, det(AB) и обратная матрица (стр. 36–47)" },
+  { id: 6, name: "6. Пространство Pⁿ, подпространства и оболочка (стр. 48–52)" },
+  { id: 7, name: "7. Линейная зависимость, базис и координаты (стр. 53–61)" }
+];
+
+const TYPE_LABELS = {
+  def: { text: "Определение", cls: "badge-def" },
+  thm: { text: "Теорема", cls: "badge-thm" },
+  prop: { text: "Лемма / Предл. / След.", cls: "badge-prop" },
+  props: { text: "Свойства", cls: "badge-props" }
+};
+
+// Complete, verified database covering ALL 61 pages of lectures
+const ITEMS = [
+  // ===== MODULE 1 =====
+  {
+    id: "m1_mat", module: 1, type: "def", pages: "стр. 1, 3",
+    title: "Матрица, матрица системы и расширенная матрица",
+    prompt: "Что такое матрица, матрица системы и расширенная матрица системы линейных уравнений?",
+    hints: "Таблица элементов одной природы; aᵢⱼ (i — строка, j — столбец); A и (A | B).",
+    answer: `
+      <p><strong>Матрица</strong> размера <span class="m"><i>m</i> × <i>n</i></span> — прямоугольная таблица из <span class="m"><i>m</i></span> строк и <span class="m"><i>n</i></span> столбцов, составленная из элементов одной природы (элементов поля <span class="m"><i>P</i></span>). В обозначении элемента <span class="m"><i>a</i><sub><i>ij</i></sub></span> индекс <span class="m"><i>i</i></span> — номер строки, <span class="m"><i>j</i></span> — номер столбца.</p>
+      <p>Для СЛУ с коэффициентами <span class="m"><i>a</i><sub><i>ij</i></sub></span> и свободными членами <span class="m"><i>b</i><sub><i>i</i></sub></span>:</p>
+      <ul class="ans-list">
+        <li><span class="m"><i>A</i> = (<i>a</i><sub><i>ij</i></sub>)</span> называется <strong>матрицей системы</strong>;</li>
+        <li><span class="m">(<i>A</i> | <i>B</i>)</span> (с дописанным столбцом свободных членов) — <strong>расширенной матрицей системы</strong>.</li>
+      </ul>
+    `,
+    criteria: [
+      "Указано, что матрица — таблица элементов одной природы (из поля P)",
+      "Правильно расшифрованы индексы aᵢⱼ: i — строка, j — столбец",
+      "Различены матрица системы A и расширенная матрица (A | B)"
+    ]
+  },
+  {
+    id: "m1_det23", module: 1, type: "def", pages: "стр. 1–4",
+    title: "Определители 2-го и 3-го порядков",
+    prompt: "Дайте определения определителя 2-го порядка и определителя 3-го порядка.",
+    hints: "Обязательно слово «ЧИСЛО»! Главная диагональ «+», побочная «−»; 6 слагаемых для n=3.",
+    answer: `
+      <p><strong>Определителем второго порядка</strong> называется <strong>число</strong>:</p>
+      <div class="mb">
+        det <i>A</i> = |<i>A</i>| =
+        <table class="det"><tr><td><i>a</i><sub>11</sub></td><td><i>a</i><sub>12</sub></td></tr><tr><td><i>a</i><sub>21</sub></td><td><i>a</i><sub>22</sub></td></tr></table>
+        = <i>a</i><sub>11</sub><i>a</i><sub>22</sub> − <i>a</i><sub>12</sub><i>a</i><sub>21</sub>.
+      </div>
+      <p><strong>Определителем третьего порядка</strong> называется <strong>число</strong>:</p>
+      <div class="mb">
+        <table class="det">
+          <tr><td><i>a</i><sub>11</sub></td><td><i>a</i><sub>12</sub></td><td><i>a</i><sub>13</sub></td></tr>
+          <tr><td><i>a</i><sub>21</sub></td><td><i>a</i><sub>22</sub></td><td><i>a</i><sub>23</sub></td></tr>
+          <tr><td><i>a</i><sub>31</sub></td><td><i>a</i><sub>32</sub></td><td><i>a</i><sub>33</sub></td></tr>
+        </table>
+        = <i>a</i><sub>11</sub><i>a</i><sub>22</sub><i>a</i><sub>33</sub> + <i>a</i><sub>12</sub><i>a</i><sub>23</sub><i>a</i><sub>31</sub> + <i>a</i><sub>13</sub><i>a</i><sub>21</sub><i>a</i><sub>32</sub> − <i>a</i><sub>13</sub><i>a</i><sub>22</sub><i>a</i><sub>31</sub> − <i>a</i><sub>11</sub><i>a</i><sub>23</sub><i>a</i><sub>32</sub> − <i>a</i><sub>12</sub><i>a</i><sub>21</sub><i>a</i><sub>33</sub>.
+      </div>
+    `,
+    criteria: [
+      "Явно написано, что определитель — это ЧИСЛО",
+      "Верная формула для n = 2: a₁₁a₂₂ − a₁₂a₂₁",
+      "Верные все 6 слагаемых (знаки и индексы) для n = 3"
+    ]
+  },
+
+  // ===== MODULE 2 =====
+  {
+    id: "m2_perm", module: 2, type: "def", pages: "стр. 5",
+    title: "Перестановка и транспозиция (в перестановке)",
+    prompt: "Дайте определения перестановки множества M = {1, 2, …, n} и транспозиции элементов в перестановке.",
+    hints: "M ≠ ∅ конечное; установленный порядок; обмен двух элементов (αᵢ, αⱼ); всего n! перестановок.",
+    answer: `
+      <p>Пусть <span class="m"><i>M</i> ≠ ∅</span> — конечное множество, <span class="m"><i>M</i> = {1, 2, …, <i>n</i>}</span>.</p>
+      <p><strong>Перестановкой</strong> называется установленный на множестве <span class="m"><i>M</i></span> порядок расположения всех его элементов (всего существует <span class="m"><i>n</i>!</span> перестановок).</p>
+      <p>Пусть дана перестановка <span class="m"><i>α</i><sub>1</sub>, …, <i>α</i><sub><i>i</i></sub>, …, <i>α</i><sub><i>j</i></sub>, …, <i>α</i><sub><i>n</i></sub></span>. <strong>Транспозицией</strong> <span class="m">(<i>α</i><sub><i>i</i></sub>, <i>α</i><sub><i>j</i></sub>)</span> называется перестановка (обмен местами) двух её элементов <span class="m"><i>α</i><sub><i>i</i></sub></span> и <span class="m"><i>α</i><sub><i>j</i></sub></span> (остальные остаются на месте).</p>
+    `,
+    criteria: [
+      "Указано конечное непустое множество M = {1, …, n}",
+      "Перестановка определена как установленный порядок на M",
+      "Транспозиция определена как обмен местами двух элементов αᵢ и αⱼ"
+    ]
+  },
+  {
+    id: "m2_thm1", module: 2, type: "thm", pages: "стр. 5–6",
+    title: "Теорема 1 (выстраивание перестановок в ряд) и Следствие",
+    prompt: "Сформулируйте Теорему 1 о записи всех n! перестановок в ряд и Следствие из неё.",
+    hints: "Все n! перестановок; каждая следующая — одной транспозицией; начать с любой; следствие — конечное число транспозиций.",
+    answer: `
+      <p><strong>Теорема 1:</strong> Все <span class="m"><i>n</i>!</span> перестановок множества <span class="m"><i>M</i> = {1, 2, …, <i>n</i>}</span> можно записать в ряд так, чтобы каждая следующая перестановка получалась из предыдущей с помощью <strong>одной транспозиции</strong>, причём ряд можно начать с <strong>любой</strong> перестановки.</p>
+      <p><strong>Следствие:</strong> От любой перестановки <span class="m">(<i>α</i><sub>1</sub>, <i>α</i><sub>2</sub>, …, <i>α</i><sub><i>n</i></sub>)</span> можно перейти к любой другой перестановке с помощью <strong>конечного числа транспозиций</strong>.</p>
+    `,
+    criteria: [
+      "Указано «все n! перестановок»",
+      "Каждая следующая получается ровно одной транспозицией",
+      "Упомянуто, что ряд можно начать с любой перестановки",
+      "Верно сформулировано следствие о конечном числе транспозиций"
+    ]
+  },
+  {
+    id: "m2_inv", module: 2, type: "def", pages: "стр. 7",
+    title: "Порядок, инверсия, чётная и нечётная перестановка",
+    prompt: "Дайте определения порядка, инверсии (беспорядка), чётной и нечётной перестановки.",
+    hints: "При i > j: αᵢ > αⱼ — порядок, αᵢ < αⱼ — инверсия; чётность определяется чётностью числа инверсий.",
+    answer: `
+      <p>Пусть <span class="m"><i>α</i><sub>1</sub>, …, <i>α</i><sub><i>j</i></sub>, …, <i>α</i><sub><i>i</i></sub>, …, <i>α</i><sub><i>n</i></sub></span> — перестановка.</p>
+      <p>Говорят, что элементы <span class="m"><i>α</i><sub><i>j</i></sub></span> и <span class="m"><i>α</i><sub><i>i</i></sub></span> (при <span class="m"><i>i</i> &gt; <i>j</i></span>) образуют:</p>
+      <ul class="ans-list">
+        <li><strong>порядок</strong>, если <span class="m"><i>α</i><sub><i>i</i></sub> &gt; <i>α</i><sub><i>j</i></sub></span>;</li>
+        <li><strong>инверсию (беспорядок)</strong>, если <span class="m"><i>α</i><sub><i>i</i></sub> &lt; <i>α</i><sub><i>j</i></sub></span> (больший элемент стоит левее меньшего).</li>
+      </ul>
+      <p>Перестановка называется <strong>чётной</strong>, если в ней чётное число инверсий, и <strong>нечётной</strong> — в противном случае (нечётное число инверсий).</p>
+    `,
+    criteria: [
+      "Чётко согласованы неравенства для индексов и значений (i > j и αᵢ < αⱼ для инверсии)",
+      "Дано определение и порядка, и инверсии",
+      "Чётность перестановки определена через чётность числа инверсий"
+    ]
+  },
+  {
+    id: "m2_thm2", module: 2, type: "thm", pages: "стр. 8",
+    title: "Теорема 2 (смена чётности при транспозиции)",
+    prompt: "Сформулируйте Теорему 2 о влиянии транспозиции на чётность перестановки.",
+    hints: "Короткая, но ключевая формулировка!",
+    answer: `
+      <p><strong>Теорема 2:</strong> Каждая транспозиция <strong>меняет чётность</strong> перестановки (чётную переводит в нечётную, нечётную — в чётную).</p>
+    `,
+    criteria: [
+      "Указано «каждая» (произвольная, не только соседняя) транспозиция",
+      "Указано, что меняется именно чётность перестановки"
+    ]
+  },
+  {
+    id: "m2_maps", module: 2, type: "def", pages: "стр. 7, 9",
+    title: "Инъективное, сюръективное и взаимно однозначное (биективное) отображения",
+    prompt: "Дайте определения инъективного, сюръективного и взаимно однозначного (биективного) отображений f: M → N.",
+    hints: "Инъекция: f(m)=f(m̃) ⇒ m=m̃; Сюръекция: ∀n∈N ∃m∈M | f(m)=n; Биекция: оба сразу.",
+    answer: `
+      <p>Пусть задано отображение <span class="m"><i>f</i>: <i>M</i> → <i>N</i></span>.</p>
+      <ul class="ans-list">
+        <li><span class="m"><i>f</i></span> называется <strong>инъективным</strong>, если <span class="m">∀<i>m</i>, <i>m̃</i> ∈ <i>M</i>: <i>f</i>(<i>m</i>) = <i>f</i>(<i>m̃</i>) ⇒ <i>m</i> = <i>m̃</i></span> (разные элементы переходят в разные).</li>
+        <li><span class="m"><i>f</i></span> называется <strong>сюръективным</strong>, если <span class="m">∀<i>n</i> ∈ <i>N</i> ∃<i>m</i> ∈ <i>M</i> : <i>f</i>(<i>m</i>) = <i>n</i></span>.</li>
+        <li>Одновременно инъективное и сюръективное отображение называется <strong>взаимно однозначным (биективным)</strong>.</li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание (стр. 9):</em> если множество <span class="m"><i>M</i></span> конечное, то для отображения <span class="m"><i>f</i>: <i>M</i> → <i>M</i></span> инъективность ⇔ сюръективность ⇔ биективность.</p>
+    `,
+    criteria: [
+      "Верная запись инъективности с кванторами",
+      "Верная запись сюръективности: ∀n ∈ N ∃m ∈ M (важен порядок кванторов!)",
+      "Биекция определена как одновременная инъективность и сюръективность"
+    ]
+  },
+  {
+    id: "m2_subst", module: 2, type: "def", pages: "стр. 7, 9",
+    title: "Подстановка и тождественная подстановка id",
+    prompt: "Дайте определения подстановки множества M = {1, …, n} и тождественной подстановки.",
+    hints: "Взаимно однозначное отображение α: M → M; двустрочная запись; id.",
+    answer: `
+      <p>Пусть <span class="m"><i>M</i> = {1, 2, …, <i>n</i>}</span>. <strong>Подстановкой</strong> (степени <span class="m"><i>n</i></span>) называется взаимно однозначное отображение <span class="m"><i>α</i>: <i>M</i> → <i>M</i></span>:</p>
+      <div class="mb">
+        <i>α</i> = <table class="perm"><tr><td>1</td><td>2</td><td>…</td><td><i>n</i></td></tr><tr><td><i>α</i><sub>1</sub></td><td><i>α</i><sub>2</sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table>,
+        &nbsp; где <i>α</i><sub><i>i</i></sub> = <i>α</i>(<i>i</i>), &nbsp; <i>i</i> = <span class="ov">1, <i>n</i></span>.
+      </div>
+      <p><strong>Тождественной подстановкой</strong> называется подстановка <span class="m">id = <table class="perm"><tr><td>1</td><td>2</td><td>…</td><td><i>n</i></td></tr><tr><td>1</td><td>2</td><td>…</td><td><i>n</i></td></tr></table></span> (каждый элемент переходит в себя).</p>
+    `,
+    criteria: [
+      "Указано M = {1, …, n} и α: M → M (в себя!)",
+      "Указано «взаимно однозначное отображение»",
+      "Приведена двустрочная запись подстановки и тождественной подстановки id"
+    ]
+  },
+  {
+    id: "m2_sign", module: 2, type: "def", pages: "стр. 9–10",
+    title: "Чётность подстановки и знак подстановки ε_α",
+    prompt: "Дайте определения чётной/нечётной подстановки и знака подстановки.",
+    hints: "Обе строки одинаковой чётности (не зависит от способа записи); ε_α = 1 или −1.",
+    answer: `
+      <p>Подстановка <span class="m"><i>α</i> = <table class="perm"><tr><td><i>i</i><sub>1</sub></td><td><i>i</i><sub>2</sub></td><td>…</td><td><i>i</i><sub><i>n</i></sub></td></tr><tr><td><i>α</i><sub><i>i</i><sub>1</sub></sub></td><td><i>α</i><sub><i>i</i><sub>2</sub></sub></td><td>…</td><td><i>α</i><sub><i>i</i><sub><i>n</i></sub></sub></td></tr></table></span> называется <strong>чётной</strong>, если перестановки <span class="m">(<i>i</i><sub>1</sub>, …, <i>i</i><sub><i>n</i></sub>)</span> и <span class="m">(<i>α</i><sub><i>i</i><sub>1</sub></sub>, …, <i>α</i><sub><i>i</i><sub><i>n</i></sub></sub>)</span> <strong>одинаковы по чётности</strong> (обе чётные или обе нечётные). В противном случае — <strong>нечётной</strong>.</p>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание:</em> чётность подстановки не зависит от способа записи; при стандартной верхней строке <span class="m">(1, 2, …, <i>n</i>)</span> она совпадает с чётностью нижней строки.</p>
+      <p><strong>Знаком подстановки</strong> <span class="m"><i>α</i></span> называется число:</p>
+      <div class="mb">
+        <i>ε</i><sub><i>α</i></sub> =
+        <span class="cases"><span class="cases-brace">{</span><span class="cases-rows">1, &nbsp; если <i>α</i> чётная,<br>−1, &nbsp; если <i>α</i> нечётная.</span></span>
+      </div>
+    `,
+    criteria: [
+      "Определение дано для произвольной записи (верхняя и нижняя строки одинаковы по чётности)",
+      "Указан случай нечётной подстановки",
+      "Верно задана кусочная формула для ε_α (1 и −1)"
+    ]
+  },
+  {
+    id: "m2_half", module: 2, type: "prop", pages: "стр. 10",
+    title: "Предложение о количестве чётных и нечётных перестановок/подстановок",
+    prompt: "Сформулируйте предложение о количестве чётных и нечётных перестановок (подстановок).",
+    hints: "n!/2 и n!/2 — но при каком условии на n?!",
+    answer: `
+      <p><strong>Предложение:</strong> При <strong><span class="m"><i>n</i> ≥ 2</span></strong> всего существует <span class="m"><span class="frac"><span><i>n</i>!</span><span>2</span></span></span> чётных и <span class="m"><span class="frac"><span><i>n</i>!</span><span>2</span></span></span> нечётных перестановок (и, соответственно, подстановок в <span class="m"><i>S</i><sub><i>n</i></sub></span>).</p>
+    `,
+    criteria: [
+      "Указаны числа n!/2 чётных и n!/2 нечётных",
+      "ОБЯЗАТЕЛЬНО указано условие n ≥ 2 (при n = 1 формула неверна!)"
+    ]
+  },
+  {
+    id: "m2_mult", module: 2, type: "def", pages: "стр. 10–12",
+    title: "Умножение подстановок и обратная подстановка",
+    prompt: "Дайте определения произведения подстановок в Sₙ и обратной подстановки α⁻¹.",
+    hints: "Композиция СПРАВА НАЛЕВО: (α·β)(m) = α(β(m)); αβ = βα = id.",
+    answer: `
+      <p>Пусть <span class="m"><i>α</i>, <i>β</i> ∈ <i>S</i><sub><i>n</i></sub></span>. <strong>Произведением</strong> <span class="m"><i>α</i> · <i>β</i> : <i>M</i> → <i>M</i></span> называется композиция отображений:</p>
+      <div class="mb">(<i>α</i> · <i>β</i>)(<i>m</i>) = <i>α</i>(<i>β</i>(<i>m</i>)), &nbsp; ∀<i>m</i> ∈ <i>M</i>.</div>
+      <p>Подстановка <span class="m"><i>β</i> ∈ <i>S</i><sub><i>n</i></sub></span> называется <strong>обратной к <span class="m"><i>α</i></span></strong> (обозначение <span class="m"><i>β</i> = <i>α</i><sup>−1</sup></span>), если:</p>
+      <div class="mb"><i>α</i><i>β</i> = <i>β</i><i>α</i> = id.</div>
+      <p>Явно: если <span class="m"><i>α</i> = <table class="perm"><tr><td>1</td><td>…</td><td><i>n</i></td></tr><tr><td><i>α</i><sub>1</sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table></span>, то <span class="m"><i>α</i><sup>−1</sup> = <table class="perm"><tr><td><i>α</i><sub>1</sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr><tr><td>1</td><td>…</td><td><i>n</i></td></tr></table></span>.</p>
+    `,
+    criteria: [
+      "Указан правильный порядок композиции: (α·β)(m) = α(β(m)) (справа налево!)",
+      "Указано ∀m ∈ M",
+      "В определении обратной записаны ОБА равенства: αβ = βα = id"
+    ]
+  },
+  {
+    id: "m2_thm3", module: 2, type: "thm", pages: "стр. 13",
+    title: "Теорема 3 (свойства умножения подстановок)",
+    prompt: "Сформулируйте Теорему 3 о свойствах умножения подстановок в Sₙ.",
+    hints: "Три групповых свойства: ассоциативность, id, обратная α⁻¹ (все с кванторами!).",
+    answer: `
+      <p><strong>Теорема 3 (свойства умножения подстановок):</strong></p>
+      <ol class="ans-list">
+        <li><span class="m">∀<i>α</i>, <i>β</i>, <i>γ</i> ∈ <i>S</i><sub><i>n</i></sub> : (<i>α</i><i>β</i>)<i>γ</i> = <i>α</i>(<i>β</i><i>γ</i>)</span> (ассоциативность);</li>
+        <li><span class="m">∃ id ∈ <i>S</i><sub><i>n</i></sub> : id · <i>α</i> = <i>α</i> · id = <i>α</i> &nbsp; ∀<i>α</i> ∈ <i>S</i><sub><i>n</i></sub></span> (нейтральный элемент);</li>
+        <li><span class="m">∀<i>α</i> ∈ <i>S</i><sub><i>n</i></sub> ∃<i>α</i><sup>−1</sup> ∈ <i>S</i><sub><i>n</i></sub> : <i>α</i><sup>−1</sup> · <i>α</i> = <i>α</i> · <i>α</i><sup>−1</sup> = id</span> (обратный элемент).</li>
+      </ol>
+    `,
+    criteria: [
+      "Записана ассоциативность с ∀α, β, γ ∈ Sₙ",
+      "Записано существование id и двустороннее равенство id·α = α·id = α",
+      "Записано существование α⁻¹ для каждого α ∈ Sₙ и двустороннее равенство"
+    ]
+  },
+  {
+    id: "m2_bao", module: 2, type: "def", pages: "стр. 13",
+    title: "Бинарная алгебраическая операция",
+    prompt: "Дайте определение бинарной алгебраической операции на множестве G.",
+    hints: "G ≠ ∅; отображение *: G × G → G; (a, b) ↦ c = a * b ∈ G.",
+    answer: `
+      <p>Пусть <span class="m"><i>G</i> ≠ ∅</span> — множество. Говорят, что на <span class="m"><i>G</i></span> задана <strong>бинарная алгебраическая операция</strong> <span class="m">*</span>, если задано отображение:</p>
+      <div class="mb">* : <i>G</i> × <i>G</i> → <i>G</i>, &nbsp; (<i>a</i>, <i>b</i>) ↦ <i>c</i> = <i>a</i> * <i>b</i> ∈ <i>G</i> &nbsp; (∀<i>a</i>, <i>b</i> ∈ <i>G</i>).</div>
+    `,
+    criteria: [
+      "Указано G ≠ ∅",
+      "Указано отображение декартова квадрата G × G → G (результат снова лежит в G!)"
+    ]
+  },
+  {
+    id: "m2_group", module: 2, type: "def", pages: "стр. 13–14",
+    title: "Группа и коммутативная (абелева) группа",
+    prompt: "Дайте определения группы (G, *) и коммутативной (абелевой) группы.",
+    hints: "G ≠ ∅, БАО *, 3 аксиомы (ассоц., нейтр. e, обратн. b); для абелевой: a*b = b*a.",
+    answer: `
+      <p>Пусть <span class="m"><i>G</i> ≠ ∅</span> — множество, на котором задана бинарная алгебраическая операция <span class="m">* : <i>G</i> × <i>G</i> → <i>G</i></span>. Пара <span class="m">(<i>G</i>, *)</span> называется <strong>группой</strong>, если выполняются:</p>
+      <ol class="ans-list">
+        <li><span class="m">∀<i>a</i>, <i>b</i>, <i>c</i> ∈ <i>G</i> : (<i>a</i> * <i>b</i>) * <i>c</i> = <i>a</i> * (<i>b</i> * <i>c</i>)</span> (ассоциативность);</li>
+        <li><span class="m">∃<i>e</i> ∈ <i>G</i> : <i>e</i> * <i>a</i> = <i>a</i> * <i>e</i> = <i>a</i> &nbsp; ∀<i>a</i> ∈ <i>G</i></span> (<span class="m"><i>e</i></span> — нейтральный элемент);</li>
+        <li><span class="m">∀<i>a</i> ∈ <i>G</i> ∃<i>b</i> ∈ <i>G</i> : <i>a</i> * <i>b</i> = <i>b</i> * <i>a</i> = <i>e</i></span> (<span class="m"><i>b</i></span> — обратный к <span class="m"><i>a</i></span>; <span class="m"><i>a</i></span> — обратимый).</li>
+      </ol>
+      <p>Если дополнительно <span class="m">∀<i>a</i>, <i>b</i> ∈ <i>G</i> : <i>a</i> * <i>b</i> = <i>b</i> * <i>a</i></span>, группа называется <strong>коммутативной (абелевой)</strong>.</p>
+    `,
+    criteria: [
+      "Указано G ≠ ∅ и наличие БАО *: G × G → G",
+      "Ассоциативность с квантором ∀a, b, c ∈ G",
+      "Существование нейтрального элемента e с двусторонним равенством (∃e ∀a)",
+      "Существование обратного b для каждого a (∀a ∃b) с двусторонним равенством",
+      "Верное определение абелевой группы"
+    ]
+  },
+  {
+    id: "m2_sn_an", module: 2, type: "def", pages: "стр. 14",
+    title: "Симметрическая группа Sₙ и знакопеременная группа Aₙ",
+    prompt: "Что такое симметрическая группа Sₙ и знакопеременная группа Aₙ? Чему равны их порядки?",
+    hints: "Все подстановки (n!) и только чётные (n!/2); некоммутативны в общем случае.",
+    answer: `
+      <ul class="ans-list">
+        <li>Группа <span class="m">(<i>S</i><sub><i>n</i></sub>, ·)</span> всех подстановок степени <span class="m"><i>n</i></span> относительно умножения подстановок называется <strong>симметрической группой</strong> (при <span class="m"><i>n</i> ≥ 3</span> некоммутативна), <span class="m">|<i>S</i><sub><i>n</i></sub>| = <i>n</i>!</span>.</li>
+        <li>Группа <span class="m">(<i>A</i><sub><i>n</i></sub>, ·)</span>, где <span class="m"><i>A</i><sub><i>n</i></sub> = {<i>α</i> ∈ <i>S</i><sub><i>n</i></sub> | <i>α</i> — чётная}</span>, называется <strong>знакопеременной группой</strong>, <span class="m">|<i>A</i><sub><i>n</i></sub>| = <i>n</i>!/2</span> (при <span class="m"><i>n</i> ≥ 2</span>).</li>
+      </ul>
+    `,
+    criteria: [
+      "Указана операция (умножение подстановок)",
+      "Aₙ определена как множество всех чётных подстановок из Sₙ",
+      "Верно указаны порядки |Sₙ| = n! и |Aₙ| = n!/2"
+    ]
+  },
+  {
+    id: "m2_transp_s", module: 2, type: "def", pages: "стр. 15",
+    title: "Транспозиция как подстановка",
+    prompt: "Дайте определение транспозиции как подстановки из Sₙ.",
+    hints: "Все элементы на месте, кроме двух (i и j), которые меняются местами; обозначение (i, j).",
+    answer: `
+      <p><strong>Транспозицией</strong> называется подстановка из <span class="m"><i>S</i><sub><i>n</i></sub></span> вида:</p>
+      <div class="mb">
+        (<i>i</i>, <i>j</i>) =
+        <table class="perm">
+          <tr><td>1</td><td>2</td><td>…</td><td><i>i</i></td><td>…</td><td><i>j</i></td><td>…</td><td><i>n</i></td></tr>
+          <tr><td>1</td><td>2</td><td>…</td><td><i>j</i></td><td>…</td><td><i>i</i></td><td>…</td><td><i>n</i></td></tr>
+        </table>
+      </div>
+      <p>(все элементы остаются на своих местах, кроме двух различных элементов <span class="m"><i>i</i></span> и <span class="m"><i>j</i></span>, которые меняются местами). Транспозиция всегда нечётна.</p>
+    `,
+    criteria: [
+      "Указано, что все элементы кроме двух (i ≠ j) остаются на месте",
+      "Показана двустрочная запись и обозначение (i, j)"
+    ]
+  },
+  {
+    id: "m2_thm4", module: 2, type: "thm", pages: "стр. 15",
+    title: "Теорема 4 (умножение подстановки слева на транспозицию)",
+    prompt: "Сформулируйте Теорему 4 о перестановке двух элементов в нижней строке подстановки.",
+    hints: "Умножение СЛЕВА на транспозицию (αᵢ, αⱼ)!",
+    answer: `
+      <p><strong>Теорема 4:</strong> Пусть <span class="m"><i>α</i> = <table class="perm"><tr><td>1</td><td>…</td><td><i>i</i></td><td>…</td><td><i>j</i></td><td>…</td><td><i>n</i></td></tr><tr><td><i>α</i><sub>1</sub></td><td>…</td><td><i>α</i><sub><i>i</i></sub></td><td>…</td><td><i>α</i><sub><i>j</i></sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table> ∈ <i>S</i><sub><i>n</i></sub></span>.</p>
+      <p>Перестановка двух элементов <span class="m"><i>α</i><sub><i>i</i></sub></span> и <span class="m"><i>α</i><sub><i>j</i></sub></span> в нижней строке подстановки <span class="m"><i>α</i></span> эквивалентна <strong>умножению <span class="m"><i>α</i></span> слева</strong> на транспозицию <span class="m">(<i>α</i><sub><i>i</i></sub>, <i>α</i><sub><i>j</i></sub>)</span>:</p>
+      <div class="mb">
+        (<i>α</i><sub><i>i</i></sub>, <i>α</i><sub><i>j</i></sub>) · <i>α</i> =
+        <table class="perm"><tr><td>1</td><td>…</td><td><i>i</i></td><td>…</td><td><i>j</i></td><td>…</td><td><i>n</i></td></tr><tr><td><i>α</i><sub>1</sub></td><td>…</td><td><i>α</i><sub><i>j</i></sub></td><td>…</td><td><i>α</i><sub><i>i</i></sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table>.
+      </div>
+    `,
+    criteria: [
+      "Указано «в нижней строке»",
+      "Указано умножение именно СЛЕВА (не справа!)",
+      "Указана именно транспозиция (αᵢ, αⱼ) (а не (i, j))"
+    ]
+  },
+  {
+    id: "m2_thm5", module: 2, type: "thm", pages: "стр. 16–17",
+    title: "Теорема 5 (разложение в произведение транспозиций)",
+    prompt: "Сформулируйте Теорему 5 о разложении подстановки в произведение транспозиций.",
+    hints: "∀α ∈ Sₙ представляется в виде произведения транспозиций; чётность α = ЧЁТНОСТЬ количества транспозиций!",
+    answer: `
+      <p><strong>Теорема 5:</strong> Любую подстановку <span class="m"><i>α</i> ∈ <i>S</i><sub><i>n</i></sub></span> (при <span class="m"><i>n</i> ≥ 2</span>) можно представить в виде произведения конечного числа транспозиций. <strong>Чётность подстановки совпадает с чётностью количества</strong> этих транспозиций в произведении.</p>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание:</em> разложение не единственно, так как <span class="m">(<i>i</i>, <i>j</i>)<sup>2</sup> = id</span>.</p>
+    `,
+    criteria: [
+      "Указано ∀α ∈ Sₙ и конечное число транспозиций",
+      "Написано «совпадает с ЧЁТНОСТЬЮ количества» (а не просто «с количеством»!)"
+    ],
+    examNote: "⚠️ В твоём конспекте на стр. 16 пропущено слово «чётностью» — обязательно исправь в голове!"
+  },
+  {
+    id: "m2_cycle", module: 2, type: "def", pages: "стр. 17–18",
+    title: "Действительно перемещаемый символ, цикл, длина цикла и независимые циклы",
+    prompt: "Дайте определения: действительно перемещаемый символ, цикл, длина цикла, независимые циклы.",
+    hints: "αᵢ ≠ i; x₁→x₂→…→xₖ→x₁, остальные на месте; нет общих действ. перем. символов.",
+    answer: `
+      <ul class="ans-list">
+        <li>Пусть <span class="m"><i>α</i> ∈ <i>S</i><sub><i>n</i></sub></span>. Символ <span class="m"><i>i</i></span> называется <strong>действительно перемещаемым</strong>, если <span class="m"><i>α</i><sub><i>i</i></sub> ≠ <i>i</i></span>.</li>
+        <li><strong>Циклом</strong> называется подстановка вида
+          <div class="mb">
+            <i>x</i> = <table class="perm">
+              <tr><td><i>x</i><sub>1</sub></td><td><i>x</i><sub>2</sub></td><td>…</td><td><i>x</i><sub><i>k</i>−1</sub></td><td><i>x</i><sub><i>k</i></sub></td><td><i>x</i><sub><i>k</i>+1</sub></td><td>…</td><td><i>x</i><sub><i>n</i></sub></td></tr>
+              <tr><td><i>x</i><sub>2</sub></td><td><i>x</i><sub>3</sub></td><td>…</td><td><i>x</i><sub><i>k</i></sub></td><td><i>x</i><sub>1</sub></td><td><i>x</i><sub><i>k</i>+1</sub></td><td>…</td><td><i>x</i><sub><i>n</i></sub></td></tr>
+            </table>
+            = (<i>x</i><sub>1</sub>, <i>x</i><sub>2</sub>, …, <i>x</i><sub><i>k</i></sub>),
+          </div>
+          где <span class="m"><i>x</i><sub>1</sub>, …, <i>x</i><sub><i>k</i></sub></span> — действительно перемещаемые символы, а остальные остаются на месте. Число <span class="m"><i>k</i></span> называется <strong>длиной цикла</strong>.
+        </li>
+        <li>Циклы <span class="m"><i>α</i> = (<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>s</i></sub>)</span> и <span class="m"><i>β</i> = (<i>β</i><sub>1</sub>, …, <i>β</i><sub><i>k</i></sub>)</span> называются <strong>независимыми</strong>, если они <strong>не имеют общих действительно перемещаемых символов</strong>.</li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:4px;"><em>Замечания (свойства циклов, стр. 18):</em></p>
+      <ol class="ans-list" style="font-size:13px;color:var(--muted);">
+        <li>Циклический сдвиг не меняет цикл: <span class="m">(<i>α</i><sub>1</sub>, <i>α</i><sub>2</sub>, …, <i>α</i><sub><i>k</i></sub>) = (<i>α</i><sub>2</sub>, …, <i>α</i><sub><i>k</i></sub>, <i>α</i><sub>1</sub>) = … = (<i>α</i><sub><i>k</i></sub>, <i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i>−1</sub>)</span>.</li>
+        <li>Обратный цикл: если <span class="m"><i>α</i> = (<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub>)</span>, то <span class="m"><i>α</i><sup>−1</sup> = (<i>α</i><sub><i>k</i></sub>, <i>α</i><sub><i>k</i>−1</sub>, …, <i>α</i><sub>1</sub>)</span>.</li>
+        <li><span class="m">(<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub>)<sup><i>k</i></sup> = id</span>, причём <span class="m">(<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub>)<sup><i>s</i></sup> ≠ id</span> при <span class="m"><i>k</i> ≥ 2</span> и <span class="m">1 ≤ <i>s</i> &lt; <i>k</i></span>.</li>
+        <li>Циклы длины 1 не рассматриваются и не записываются.</li>
+        <li>Независимые циклы коммутируют: <span class="m"><i>α</i><i>β</i> = <i>β</i><i>α</i></span>.</li>
+      </ol>
+    `,
+    criteria: [
+      "Действительно перемещаемый: αᵢ ≠ i",
+      "Цикл: x₁→x₂→…→xₖ→x₁, остальные неподвижны, длина = k",
+      "Независимые циклы: нет общих действительно перемещаемых символов"
+    ]
+  },
+  {
+    id: "m2_thm6", module: 2, type: "thm", pages: "стр. 18",
+    title: "Теорема 6 (разложение подстановки в произведение независимых циклов)",
+    prompt: "Сформулируйте Теорему 6 о разложении подстановки в произведение независимых циклов.",
+    hints: "∀α ∈ Sₙ; единственно с точностью до перестановки этих независимых циклов (т.к. они коммутируют).",
+    answer: `
+      <p><strong>Теорема 6:</strong> Любую (нетождественную) подстановку <span class="m"><i>α</i> ∈ <i>S</i><sub><i>n</i></sub></span> можно разложить в произведение независимых циклов, причём это разложение <strong>единственно с точностью до перестановки</strong> этих независимых циклов (и циклической записи каждого цикла).</p>
+    `,
+    criteria: [
+      "Указано разложение в произведение именно НЕЗАВИСИМЫХ циклов",
+      "Указана единственность с точностью до перестановки (порядка) этих циклов"
+    ]
+  },
+
+  // ===== MODULE 3 =====
+  {
+    id: "m3_detn", module: 3, type: "def", pages: "стр. 19–20",
+    title: "Определитель квадратной матрицы n-го порядка (Опр. 1, 2, 3)",
+    prompt: "Дайте определение определителя квадратной матрицы A ∈ Mₙ(P) порядка n (формульное и словесное).",
+    hints: "ЧИСЛО! Сумма по α ∈ Sₙ: ε_α · a₁α₁…aₙαₙ; сумма n! слагаемых по одному из каждой строки и столбца.",
+    answer: `
+      <p>Пусть <span class="m"><i>A</i> = (<i>a</i><sub><i>ij</i></sub>) ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span> — квадратная матрица порядка <span class="m"><i>n</i></span> над полем <span class="m"><i>P</i></span>.</p>
+      <p><strong>Определение 1:</strong> Определителем (детерминантом) матрицы <span class="m"><i>A</i></span> называется число:</p>
+      <div class="mb">
+        det <i>A</i> =
+        <span class="sumop"><span class="s-top">&nbsp;</span><span class="s-sym">∑</span><span class="s-bot"><i>α</i> ∈ <i>S</i><sub><i>n</i></sub></span></span>
+        <i>ε</i><sub><i>α</i></sub> <i>a</i><sub>1<i>α</i><sub>1</sub></sub> <i>a</i><sub>2<i>α</i><sub>2</sub></sub> … <i>a</i><sub><i>nα</i><sub><i>n</i></sub></sub>,
+        &nbsp; где <i>α</i> = <table class="perm"><tr><td>1</td><td>2</td><td>…</td><td><i>n</i></td></tr><tr><td><i>α</i><sub>1</sub></td><td><i>α</i><sub>2</sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table> ∈ <i>S</i><sub><i>n</i></sub>.
+      </div>
+      <p><strong>Определение 2 (общий порядок строк):</strong> <span class="m">det <i>A</i> = ∑<sub><i>α</i>∈<i>S</i><sub><i>n</i></sub></sub> <i>ε</i><sub><i>α</i></sub> <i>a</i><sub><i>i</i><sub>1</sub><i>α</i><sub>1</sub></sub> … <i>a</i><sub><i>i</i><sub><i>n</i></sub><i>α</i><sub><i>n</i></sub></sub></span>, где <span class="m"><i>α</i> = <table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>n</i></sub></td></tr><tr><td><i>α</i><sub>1</sub></td><td>…</td><td><i>α</i><sub><i>n</i></sub></td></tr></table></span>.</p>
+      <p><strong>Определение 3 (словесное):</strong> Определителем квадратной матрицы <span class="m"><i>A</i></span> называется сумма <span class="m"><i>n</i>!</span> слагаемых, каждое из которых есть произведение <span class="m"><i>n</i></span> элементов матрицы <span class="m"><i>A</i></span>, взятых <strong>по одному из каждой строки и каждого столбца</strong>, со знаком «+», если подстановка индексов чётная, и со знаком «−» в противном случае.</p>
+    `,
+    criteria: [
+      "Указано, что A ∈ Mₙ(P) — квадратная матрица, а det A — ЧИСЛО",
+      "Верная формула с суммой по всем α ∈ Sₙ и множителем ε_α",
+      "Расшифровано, что такое ε_α (знак подстановки)",
+      "В словесном определении: n! слагаемых, по 1 из каждой строки и столбца, знак по чётности подстановки"
+    ]
+  },
+  {
+    id: "m3_linrow", module: 3, type: "def", pages: "стр. 24",
+    title: "Линейная комбинация строк определителя",
+    prompt: "Дайте определение того, что i-я строка определителя является линейной комбинацией остальных строк.",
+    hints: "aᵢⱼ = ∑_{k ≠ i} αₖ aₖⱼ для всех j = 1..n, αₖ ∈ P.",
+    answer: `
+      <p>Говорят, что <span class="m"><i>i</i></span>-я строка матрицы (определителя) является <strong>линейной комбинацией остальных строк</strong>, если существуют <span class="m"><i>α</i><sub><i>k</i></sub> ∈ <i>P</i></span> (<span class="m"><i>k</i> ≠ <i>i</i></span>) такие, что для всех <span class="m"><i>j</i> = <span class="ov">1, <i>n</i></span></span>:</p>
+      <div class="mb">
+        <i>a</i><sub><i>ij</i></sub> =
+        <span class="sumop"><span class="s-top">&nbsp;</span><span class="s-sym">∑</span><span class="s-bot"><i>k</i> ≠ <i>i</i></span></span>
+        <i>α</i><sub><i>k</i></sub> <i>a</i><sub><i>kj</i></sub>.
+      </div>
+    `,
+    criteria: [
+      "Указано суммирование по k ≠ i",
+      "Указано αₖ ∈ P и выполнение равенства для всех j = 1, …, n"
+    ]
+  },
+  {
+    id: "m3_props", module: 3, type: "props", pages: "стр. 21–25",
+    title: "10 свойств определителя (1°–10°)",
+    prompt: "Перечислите и точно сформулируйте все 10 свойств определителя (1°–10°).",
+    hints: "1° det A = det Aᵀ; 2° нулевая; 3° обмен (−); 4° одинак.=0; 5° вынос t; 6° пропорц.=0; 7° сумма; 8° +t·(j); 9° л.к.=0; 10° +л.к.",
+    answer: `
+      <ol class="ans-list">
+        <li><strong>1°</strong> <span class="m">det <i>A</i> = det <i>A</i><sup><i>T</i></sup></span> (все свойства строк справедливы и для столбцов).</li>
+        <li><strong>2°</strong> Если есть нулевая строка, то <span class="m">det <i>A</i> = 0</span>.</li>
+        <li><strong>3°</strong> При перестановке двух строк местами определитель меняет знак (<span class="m">det <i>B</i> = −det <i>A</i></span>).</li>
+        <li><strong>4°</strong> Если есть две одинаковые строки, то <span class="m">det <i>A</i> = 0</span>.</li>
+        <li><strong>5°</strong> Общий множитель <span class="m"><i>t</i> ∈ <i>P</i></span> одной строки можно вынести за знак определителя: <span class="m">det <i>Ã</i> = <i>t</i> · det <i>A</i></span>.</li>
+        <li><strong>6°</strong> Если есть две пропорциональные строки, то <span class="m">det <i>A</i> = 0</span>.</li>
+        <li><strong>7°</strong> Если элементы <span class="m"><i>i</i></span>-й строки имеют вид <span class="m"><i>b</i><sub><i>j</i></sub> + <i>c</i><sub><i>j</i></sub></span>, то определитель равен сумме двух определителей, у которых остальные строки те же, а в <span class="m"><i>i</i></span>-й стоят соответственно <span class="m">(<i>b</i><sub>1</sub>,…,<i>b</i><sub><i>n</i></sub>)</span> и <span class="m">(<i>c</i><sub>1</sub>,…,<i>c</i><sub><i>n</i></sub>)</span>.</li>
+        <li><strong>8°</strong> Если к <span class="m"><i>i</i></span>-й строке прибавить <span class="m"><i>j</i></span>-ю (<span class="m"><i>j</i> ≠ <i>i</i></span>), умноженную на <span class="m"><i>t</i> ∈ <i>P</i></span>, определитель не изменится.</li>
+        <li><strong>9°</strong> Если <span class="m"><i>i</i></span>-я строка — линейная комбинация остальных строк, то <span class="m">det <i>A</i> = 0</span>.</li>
+        <li><strong>10°</strong> Если к <span class="m"><i>i</i></span>-й строке прибавить линейную комбинацию остальных строк, определитель не изменится.</li>
+      </ol>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание (стр. 25):</em> треугольный определитель = <span class="m"><i>a</i><sub>11</sub>…<i>a</i><sub><i>nn</i></sub></span>; антитреугольный = <span class="m">(−1)<sup><i>n</i>(<i>n</i>−1)/2</sup><i>a</i><sub>1,<i>n</i></sub>…<i>a</i><sub><i>n</i>,1</sub></span>.</p>
+    `,
+    criteria: [
+      "Названы все 10 свойств без пропусков",
+      "В 5° подчёркнуто: множитель выносится из ОДНОЙ строки",
+      "В 8° указано j ≠ i (другая строка!)",
+      "В 7° уточнено, что все остальные строки не меняются"
+    ]
+  },
+
+  // ===== MODULE 4 =====
+  {
+    id: "m4_minors", module: 4, type: "def", pages: "стр. 26",
+    title: "Минор k-го порядка, дополнительный минор и алгебраическое дополнение",
+    prompt: "Дайте определения минора k-го порядка, дополнительного минора и алгебраического дополнения в определителе порядка n.",
+    hints: "Фиксируем k строк 1≤i₁<…<iₖ≤n и k столбцов 1≤j₁<…<jₖ≤n; M (порядок k), M̄ (вычёркиваем, порядок n−k), A = (−1)^{S_M} M̄.",
+    answer: `
+      <p>Зафиксируем <span class="m"><i>k</i></span> строк <span class="m">1 ≤ <i>i</i><sub>1</sub> &lt; … &lt; <i>i</i><sub><i>k</i></sub> ≤ <i>n</i></span> и <span class="m"><i>k</i></span> столбцов <span class="m">1 ≤ <i>j</i><sub>1</sub> &lt; … &lt; <i>j</i><sub><i>k</i></sub> ≤ <i>n</i></span> (<span class="m">1 ≤ <i>k</i> ≤ <i>n</i> − 1</span> для доп. минора).</p>
+      <ul class="ans-list">
+        <li><strong>Минором</strong> <span class="m"><i>M</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table></span> называется определитель порядка <span class="m"><i>k</i></span>, построенный из элементов, стоящих на пересечении выбранных <span class="m"><i>k</i></span> строк и <span class="m"><i>k</i></span> столбцов:
+          <div class="mb">
+            <i>M</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table>
+            = <table class="det">
+              <tr><td><i>a</i><sub><i>i</i><sub>1</sub><i>j</i><sub>1</sub></sub></td><td><i>a</i><sub><i>i</i><sub>1</sub><i>j</i><sub>2</sub></sub></td><td>…</td><td><i>a</i><sub><i>i</i><sub>1</sub><i>j</i><sub><i>k</i></sub></sub></td></tr>
+              <tr><td>⋮</td><td>⋮</td><td>⋱</td><td>⋮</td></tr>
+              <tr><td><i>a</i><sub><i>i</i><sub><i>k</i></sub><i>j</i><sub>1</sub></sub></td><td><i>a</i><sub><i>i</i><sub><i>k</i></sub><i>j</i><sub>2</sub></sub></td><td>…</td><td><i>a</i><sub><i>i</i><sub><i>k</i></sub><i>j</i><sub><i>k</i></sub></sub></td></tr>
+            </table>.
+          </div>
+        </li>
+        <li><strong>Дополнительным минором</strong> <span class="m"><span class="ov"><i>M</i></span><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table></span> называется определитель порядка <span class="m"><i>n</i> − <i>k</i></span>, полученный вычёркиванием из <span class="m">det <i>A</i></span> строк <span class="m"><i>i</i><sub>1</sub>, …, <i>i</i><sub><i>k</i></sub></span> и столбцов <span class="m"><i>j</i><sub>1</sub>, …, <i>j</i><sub><i>k</i></sub></span>.</li>
+        <li><strong>Алгебраическим дополнением</strong> называется число:
+          <div class="mb">
+            <i>A</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table>
+            = (−1)<sup><i>S</i><sub><i>M</i></sub></sup> <span class="ov"><i>M</i></span><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table>,
+            &nbsp; где <i>S</i><sub><i>M</i></sub> = <i>i</i><sub>1</sub> + … + <i>i</i><sub><i>k</i></sub> + <i>j</i><sub>1</sub> + … + <i>j</i><sub><i>k</i></sub>.
+          </div>
+        </li>
+      </ul>
+    `,
+    criteria: [
+      "Указаны упорядоченные индексы 1 ≤ i₁ < … < iₖ ≤ n и 1 ≤ j₁ < … < jₖ ≤ n",
+      "Указаны порядки определителей: k у минора и n − k у дополнительного минора",
+      "Верная формула A = (−1)^{S_M} · M̄ и расшифровка S_M"
+    ]
+  },
+  {
+    id: "m4_lem1", module: 4, type: "prop", pages: "стр. 27–29",
+    title: "Лемма 1 (вспомогательная к теореме Лапласа)",
+    prompt: "Сформулируйте Лемму 1 о произведении минора на его алгебраическое дополнение.",
+    hints: "M·A — алгебраическая сумма, каждое слагаемое — член det A с тем же знаком!",
+    answer: `
+      <p><strong>Лемма 1:</strong> Зафиксируем <span class="m"><i>k</i></span> строк <span class="m">1 ≤ <i>i</i><sub>1</sub> &lt; … &lt; <i>i</i><sub><i>k</i></sub> ≤ <i>n</i></span> и <span class="m"><i>k</i></span> столбцов <span class="m">1 ≤ <i>j</i><sub>1</sub> &lt; … &lt; <i>j</i><sub><i>k</i></sub> ≤ <i>n</i></span>.</p>
+      <p>Тогда произведение <span class="m"><i>M</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table> · <i>A</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table></span> представляет собой алгебраическую сумму, каждое слагаемое которой является членом определителя <span class="m">det <i>A</i></span>, причём <strong>знак в этой сумме совпадает со знаком в <span class="m">det <i>A</i></span></strong>.</p>
+    `,
+    criteria: [
+      "Зафиксированы k строк и k столбцов (1 ≤ i₁ < … < iₖ ≤ n, 1 ≤ j₁ < … < jₖ ≤ n)",
+      "Указано, что каждое слагаемое произведения M·A является членом det A",
+      "Указано совпадение знака слагаемого со знаком в det A"
+    ]
+  },
+  {
+    id: "m4_laplace", module: 4, type: "thm", pages: "стр. 30–31",
+    title: "Теорема 1 (Теорема Лапласа)",
+    prompt: "Сформулируйте Теорему Лапласа (для строк и замечание для столбцов).",
+    hints: "Фиксируем k строк 1 ≤ i₁ < … < iₖ ≤ n; det A = ∑ по всем 1 ≤ j₁ < … < jₖ ≤ n произведений M·A.",
+    answer: `
+      <p><strong>Теорема Лапласа:</strong> Зафиксируем в определителе <span class="m">det <i>A</i></span> порядка <span class="m"><i>n</i></span> произвольные <span class="m"><i>k</i></span> строк (<span class="m">1 ≤ <i>k</i> ≤ <i>n</i> − 1</span>) с номерами <span class="m">1 ≤ <i>i</i><sub>1</sub> &lt; <i>i</i><sub>2</sub> &lt; … &lt; <i>i</i><sub><i>k</i></sub> ≤ <i>n</i></span>. Тогда:</p>
+      <div class="mb">
+        det <i>A</i> =
+        <span class="sumop"><span class="s-top">&nbsp;</span><span class="s-sym">∑</span><span class="s-bot">1 ≤ <i>j</i><sub>1</sub> &lt; … &lt; <i>j</i><sub><i>k</i></sub> ≤ <i>n</i></span></span>
+        <i>M</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table>
+        <i>A</i><table class="perm"><tr><td><i>i</i><sub>1</sub></td><td>…</td><td><i>i</i><sub><i>k</i></sub></td></tr><tr><td><i>j</i><sub>1</sub></td><td>…</td><td><i>j</i><sub><i>k</i></sub></td></tr></table>.
+      </div>
+      <p><strong>Замечание (для столбцов):</strong> так как <span class="m">det <i>A</i> = det <i>A</i><sup><i>T</i></sup></span>, при фиксации <span class="m"><i>k</i></span> столбцов <span class="m">1 ≤ <i>j</i><sub>1</sub> &lt; … &lt; <i>j</i><sub><i>k</i></sub> ≤ <i>n</i></span> суммирование идёт по всем <span class="m">1 ≤ <i>i</i><sub>1</sub> &lt; … &lt; <i>i</i><sub><i>k</i></sub> ≤ <i>n</i></span>.</p>
+    `,
+    criteria: [
+      "Зафиксированы k строк 1 ≤ i₁ < … < iₖ ≤ n (1 ≤ k ≤ n − 1)",
+      "Правильно указаны пределы суммирования: по всем 1 ≤ j₁ < … < jₖ ≤ n",
+      "Не пропущен знак равенства det A = ∑ M · A",
+      "Упомянута аналогичная формула для столбцов"
+    ],
+    examNote: "⚠️ В конспекте на стр. 30 пропущен знак «=» между det A и ∑ — не повтори эту описку!"
+  },
+  {
+    id: "m4_lap_cor", module: 4, type: "prop", pages: "стр. 31",
+    title: "Следствия из теоремы Лапласа (разложение по строке и по столбцу)",
+    prompt: "Сформулируйте следствия из теоремы Лапласа о разложении определителя по i-й строке и по j-му столбцу.",
+    hints: "Частный случай k = 1: ∑ aᵢⱼ A(i / j).",
+    answer: `
+      <ol class="ans-list">
+        <li><strong>Разложение по <span class="m"><i>i</i></span>-й строке</strong> (<span class="m">1 ≤ <i>i</i> ≤ <i>n</i></span>):
+          <div class="mb">
+            det <i>A</i> = <span class="sumop"><span class="s-top"><i>n</i></span><span class="s-sym">∑</span><span class="s-bot"><i>j</i>=1</span></span> <i>a</i><sub><i>ij</i></sub> <i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td><i>j</i></td></tr></table>
+            = <i>a</i><sub><i>i</i>1</sub><i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td>1</td></tr></table> + <i>a</i><sub><i>i</i>2</sub><i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td>2</td></tr></table> + … + <i>a</i><sub><i>in</i></sub><i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td><i>n</i></td></tr></table>.
+          </div>
+        </li>
+        <li><strong>Разложение по <span class="m"><i>j</i></span>-му столбцу</strong> (<span class="m">1 ≤ <i>j</i> ≤ <i>n</i></span>):
+          <div class="mb">
+            det <i>A</i> = <span class="sumop"><span class="s-top"><i>n</i></span><span class="s-sym">∑</span><span class="s-bot"><i>i</i>=1</span></span> <i>a</i><sub><i>ij</i></sub> <i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td><i>j</i></td></tr></table>
+            = <i>a</i><sub>1<i>j</i></sub><i>A</i><table class="perm"><tr><td>1</td></tr><tr><td><i>j</i></td></tr></table> + <i>a</i><sub>2<i>j</i></sub><i>A</i><table class="perm"><tr><td>2</td></tr><tr><td><i>j</i></td></tr></table> + … + <i>a</i><sub><i>nj</i></sub><i>A</i><table class="perm"><tr><td><i>n</i></td></tr><tr><td><i>j</i></td></tr></table>.
+          </div>
+        </li>
+      </ol>
+    `,
+    criteria: [
+      "В сумме по строке бежит индекс j от 1 до n, строка i фиксирована",
+      "В сумме по столбцу бежит индекс i от 1 до n, столбец j фиксирован",
+      "Верно записаны индексы в развёрнутых суммах"
+    ],
+    examNote: "⚠️ В конспекте на стр. 31 описки в развёрнутых суммах (A(i/1) под знаком ∑, + вместо =, aᵢⱼ вместо a₁ⱼ)."
+  },
+  {
+    id: "m4_alien", module: 4, type: "prop", pages: "стр. 32",
+    title: "Лемма об умножении на свои и чужие алгебраические дополнения",
+    prompt: "Сформулируйте лемму об умножении элементов строки (столбца) на свои и чужие алгебраические дополнения.",
+    hints: "На свои (k = i) → det A; на чужие (k ≠ i) → 0.",
+    answer: `
+      <p><strong>Для строк</strong> (фиксируем <span class="m"><i>i</i></span>-ю строку, <span class="m">1 ≤ <i>i</i>, <i>k</i> ≤ <i>n</i></span>):</p>
+      <div class="mb">
+        <span class="sumop"><span class="s-top"><i>n</i></span><span class="s-sym">∑</span><span class="s-bot"><i>j</i>=1</span></span> <i>a</i><sub><i>ij</i></sub> <i>A</i><table class="perm"><tr><td><i>k</i></td></tr><tr><td><i>j</i></td></tr></table>
+        = <span class="cases"><span class="cases-brace">{</span><span class="cases-rows">det <i>A</i>, &nbsp; если <i>k</i> = <i>i</i>,<br>0, &nbsp; если <i>k</i> ≠ <i>i</i>.</span></span>
+      </div>
+      <p><strong>Для столбцов</strong> (фиксируем <span class="m"><i>j</i></span>-й столбец, <span class="m">1 ≤ <i>j</i>, <i>k</i> ≤ <i>n</i></span>):</p>
+      <div class="mb">
+        <span class="sumop"><span class="s-top"><i>n</i></span><span class="s-sym">∑</span><span class="s-bot"><i>i</i>=1</span></span> <i>a</i><sub><i>ij</i></sub> <i>A</i><table class="perm"><tr><td><i>i</i></td></tr><tr><td><i>k</i></td></tr></table>
+        = <span class="cases"><span class="cases-brace">{</span><span class="cases-rows">det <i>A</i>, &nbsp; если <i>k</i> = <i>j</i>,<br>0, &nbsp; если <i>k</i> ≠ <i>j</i>.</span></span>
+      </div>
+    `,
+    criteria: [
+      "Указаны диапазоны 1 ≤ i, k ≤ n (и 1 ≤ j, k ≤ n)",
+      "Правильно разделены случаи k = i (det A) и k ≠ i (0)",
+      "Приведена формула и для строк, и для столбцов"
+    ],
+    examNote: "ℹ️ В тетради на стр. 32 сверху написано «Не будет на экзамене» — но формулировка очень короткая и нужна в правиле Крамера и обратной матрице."
+  },
+  {
+    id: "m4_cramer", module: 4, type: "thm", pages: "стр. 33–35",
+    title: "Правило Крамера (Теорема 1) и Следствие для однородной СЛУ",
+    prompt: "Сформулируйте Теорему (Правило Крамера) и Следствие для однородной системы.",
+    hints: "n уравнений, n неизвестных; Δ = det A, Δⱼ — замена j-го столбца на столбец свободных членов; если Δ ≠ 0 ⇒ ∃! решение.",
+    answer: `
+      <p>Пусть дана система <span class="m"><i>n</i></span> линейных уравнений с <span class="m"><i>n</i></span> неизвестными с матрицей <span class="m"><i>A</i> = (<i>a</i><sub><i>ij</i></sub>)</span> и столбцом свободных членов <span class="m">(<i>b</i><sub>1</sub>, …, <i>b</i><sub><i>n</i></sub>)<sup><i>T</i></sup></span>. Обозначим <span class="m">Δ = det <i>A</i></span>, а <span class="m">Δ<sub><i>j</i></sub></span> (<span class="m"><i>j</i> = <span class="ov">1, <i>n</i></span></span>) — определитель, полученный из <span class="m">Δ</span> заменой <span class="m"><i>j</i></span>-го столбца на столбец свободных членов.</p>
+      <p><strong>Теорема (Правило Крамера):</strong> Если <strong><span class="m">Δ ≠ 0</span></strong>, то система имеет <strong>единственное решение</strong>:</p>
+      <div class="mb">
+        (<span class="frac"><span>Δ<sub>1</sub></span><span>Δ</span></span>, <span class="frac"><span>Δ<sub>2</sub></span><span>Δ</span></span>, …, <span class="frac"><span>Δ<sub><i>n</i></sub></span><span>Δ</span></span>),
+        &nbsp; т.е. &nbsp; <i>x</i><sub><i>j</i></sub> = <span class="frac"><span>Δ<sub><i>j</i></sub></span><span>Δ</span></span>, &nbsp; <i>j</i> = <span class="ov">1, <i>n</i></span>.
+      </div>
+      <p><strong>Следствие:</strong> Если система из <span class="m"><i>n</i></span> уравнений с <span class="m"><i>n</i></span> неизвестными <strong>однородная</strong> (все <span class="m"><i>b</i><sub><i>i</i></sub> = 0</span>) и <span class="m">Δ ≠ 0</span>, то она имеет <strong>только нулевое решение</strong> <span class="m">(0, 0, …, 0)</span>.</p>
+    `,
+    criteria: [
+      "Указано, что число уравнений равно числу неизвестных (n на n)",
+      "Чётко определены Δ и Δⱼ (замена j-го столбца на столбец свободных членов)",
+      "Указано ключевое условие Δ ≠ 0 и слово «ЕДИНСТВЕННОЕ решение»",
+      "Верно сформулировано следствие для однородной системы"
+    ]
+  },
+
+  // ===== MODULE 5 =====
+  {
+    id: "m5_add_sc", module: 5, type: "def", pages: "стр. 36",
+    title: "Сложение матриц и умножение матрицы на число",
+    prompt: "Дайте определения сложения матриц и умножения матрицы на число (с указанием размеров).",
+    hints: "A, B ∈ M_{m×n}(P) (ОДИНАКОВЫЙ размер!); cᵢⱼ = aᵢⱼ + bᵢⱼ; cᵢⱼ = α·aᵢⱼ (ВСЕ элементы).",
+    answer: `
+      <ul class="ans-list">
+        <li><strong>Сложение матриц:</strong> пусть <span class="m"><i>A</i> = (<i>a</i><sub><i>ij</i></sub>), <i>B</i> = (<i>b</i><sub><i>ij</i></sub>) ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> (матрицы <strong>одного размера</strong>). Суммой <span class="m"><i>C</i> = <i>A</i> + <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> называется матрица <span class="m"><i>C</i> = (<i>c</i><sub><i>ij</i></sub>)</span>, где <span class="m"><i>c</i><sub><i>ij</i></sub> = <i>a</i><sub><i>ij</i></sub> + <i>b</i><sub><i>ij</i></sub></span> (<span class="m"><i>i</i> = <span class="ov">1, <i>m</i></span>, <i>j</i> = <span class="ov">1, <i>n</i></span></span>).</li>
+        <li><strong>Умножение на число:</strong> пусть <span class="m"><i>A</i> = (<i>a</i><sub><i>ij</i></sub>) ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>, <span class="m"><i>α</i> ∈ <i>P</i></span>. Произведением <span class="m"><i>C</i> = <i>α</i> · <i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> называется матрица <span class="m"><i>C</i> = (<i>c</i><sub><i>ij</i></sub>)</span>, где <span class="m"><i>c</i><sub><i>ij</i></sub> = <i>α</i><i>a</i><sub><i>ij</i></sub></span> (<span class="m"><i>i</i> = <span class="ov">1, <i>m</i></span>, <i>j</i> = <span class="ov">1, <i>n</i></span></span>).</li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание (стр. 36):</em> при умножении <strong>определителя</strong> на число умножается только одна строка/столбец, а при умножении <strong>матрицы</strong> на число — <strong>все</strong> её элементы.</p>
+    `,
+    criteria: [
+      "Указано, что для сложения размеры матриц совпадают: M_{m×n}(P)",
+      "Записаны поэлементные формулы с диапазонами i = 1..m, j = 1..n",
+      "Указано α ∈ P (поле)"
+    ]
+  },
+  {
+    id: "m5_add_props", module: 5, type: "props", pages: "стр. 37–38",
+    title: "Свойства сложения матриц и умножения матрицы на число (1°–9°)",
+    prompt: "Сформулируйте все 9 свойств сложения матриц и умножения матрицы на число в M_{m×n}(P).",
+    hints: "8 линейных аксиом (как в Pⁿ) + 9°: (A + B)ᵀ = Aᵀ + Bᵀ.",
+    answer: `
+      <ol class="ans-list">
+        <li><span class="m"><i>A</i> + <i>B</i> = <i>B</i> + <i>A</i> &nbsp; ∀<i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> (коммутативность);</li>
+        <li><span class="m"><i>A</i> + (<i>B</i> + <i>C</i>) = (<i>A</i> + <i>B</i>) + <i>C</i> &nbsp; ∀<i>A</i>, <i>B</i>, <i>C</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> (ассоциативность);</li>
+        <li><span class="m">∃<i>O</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>) : <i>O</i> + <i>A</i> = <i>A</i> + <i>O</i> = <i>A</i> &nbsp; ∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> (нулевая матрица);</li>
+        <li><span class="m">∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>) ∃(−<i>A</i>) ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>) : <i>A</i> + (−<i>A</i>) = (−<i>A</i>) + <i>A</i> = <i>O</i></span> (противоположная);</li>
+        <li><span class="m">1 ∈ <i>P</i>, &nbsp; 1 · <i>A</i> = <i>A</i> &nbsp; ∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>;</li>
+        <li><span class="m"><i>α</i>(<i>A</i> + <i>B</i>) = <i>α</i><i>A</i> + <i>α</i><i>B</i> &nbsp; ∀<i>α</i> ∈ <i>P</i>, ∀<i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>;</li>
+        <li><span class="m">(<i>α</i> + <i>β</i>)<i>A</i> = <i>α</i><i>A</i> + <i>β</i><i>A</i> &nbsp; ∀<i>α</i>, <i>β</i> ∈ <i>P</i>, ∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>;</li>
+        <li><span class="m">(<i>α</i><i>β</i>)<i>A</i> = <i>α</i>(<i>β</i><i>A</i>) = <i>β</i>(<i>α</i><i>A</i>) &nbsp; ∀<i>α</i>, <i>β</i> ∈ <i>P</i>, ∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>;</li>
+        <li><span class="m">(<i>A</i> + <i>B</i>)<sup><i>T</i></sup> = <i>A</i><sup><i>T</i></sup> + <i>B</i><sup><i>T</i></sup> &nbsp; ∀<i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>.</li>
+      </ol>
+    `,
+    criteria: [
+      "Записаны все 9 свойств с правильными кванторами (в 2° не забыта C!)",
+      "В 3° и 4° указаны двусторонние равенства",
+      "Не забыто свойство 9°: (A + B)ᵀ = Aᵀ + Bᵀ"
+    ]
+  },
+  {
+    id: "m5_mult", module: 5, type: "def", pages: "стр. 39, 41",
+    title: "Умножение матриц, единичная матрица E и символ Кронекера",
+    prompt: "Дайте определения произведения матриц A и B, единичной матрицы E и символа Кронекера δᵢⱼ.",
+    hints: "A ∈ M_{m×t}(P), B ∈ M_{t×n}(P) → C ∈ M_{m×n}(P); cᵢⱼ = ∑_{k=1}^t aᵢₖbₖⱼ; E = (δᵢⱼ).",
+    answer: `
+      <p>Пусть <span class="m"><i>A</i> = (<i>a</i><sub><i>ik</i></sub>) ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>)</span> и <span class="m"><i>B</i> = (<i>b</i><sub><i>kj</i></sub>) ∈ <i>M</i><sub><i>t</i>×<i>n</i></sub>(<i>P</i>)</span> (число столбцов <span class="m"><i>A</i></span> равно числу строк <span class="m"><i>B</i></span>).</p>
+      <p><strong>Произведением</strong> <span class="m"><i>C</i> = <i>A</i> · <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> называется матрица <span class="m"><i>C</i> = (<i>c</i><sub><i>ij</i></sub>)</span>, где:</p>
+      <div class="mb">
+        <i>c</i><sub><i>ij</i></sub> = <span class="sumop"><span class="s-top"><i>t</i></span><span class="s-sym">∑</span><span class="s-bot"><i>k</i>=1</span></span> <i>a</i><sub><i>ik</i></sub><i>b</i><sub><i>kj</i></sub>,
+        &nbsp; <i>i</i> = <span class="ov">1, <i>m</i></span>, &nbsp; <i>j</i> = <span class="ov">1, <i>n</i></span>.
+      </div>
+      <p><strong>Единичной матрицей</strong> порядка <span class="m"><i>n</i></span> называется <span class="m"><i>E</i><sub><i>n</i></sub> = (<i>δ</i><sub><i>ij</i></sub>) ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>, где <span class="m"><i>δ</i><sub><i>ij</i></sub></span> — <strong>символ Кронекера</strong>: <span class="m"><i>δ</i><sub><i>ij</i></sub> = 1</span> при <span class="m"><i>i</i> = <i>j</i></span> и <span class="m"><i>δ</i><sub><i>ij</i></sub> = 0</span> при <span class="m"><i>i</i> ≠ <i>j</i></span>.</p>
+      <p style="font-size:13px;color:var(--muted);"><em>Замечание (стр. 39):</em> умножение матриц в общем случае <strong>некоммутативно</strong> (<span class="m"><i>AB</i> ≠ <i>BA</i></span> даже для квадратных матриц).</p>
+    `,
+    criteria: [
+      "Чётко согласованы размеры: A ∈ M_{m×t}(P), B ∈ M_{t×n}(P), результат C ∈ M_{m×n}(P)",
+      "Верная формула cᵢⱼ = ∑_{k=1}^t aᵢₖ bₖⱼ с диапазонами i и j",
+      "Верно определены E и δᵢⱼ"
+    ]
+  },
+  {
+    id: "m5_mult_props", module: 5, type: "props", pages: "стр. 40–41",
+    title: "Свойства умножения матриц",
+    prompt: "Сформулируйте свойства умножения матриц (с точным указанием размеров всех матриц!).",
+    hints: "1) (AB)C = A(BC); 2) дистрибутивность слева/справа и EₘA=A, AEₜ=A; 3) (AB)ᵀ = BᵀAᵀ.",
+    answer: `
+      <ol class="ans-list">
+        <li><strong>Ассоциативность:</strong> <span class="m">∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>), <i>B</i> ∈ <i>M</i><sub><i>t</i>×<i>k</i></sub>(<i>P</i>), <i>C</i> ∈ <i>M</i><sub><i>k</i>×<i>n</i></sub>(<i>P</i>) : (<i>AB</i>)<i>C</i> = <i>A</i>(<i>BC</i>)</span>.</li>
+        <li><strong>Дистрибутивность и единичная матрица:</strong>
+          <ul>
+            <li>а) <span class="m">(<i>A</i> + <i>B</i>)<i>C</i> = <i>AC</i> + <i>BC</i></span> &nbsp; (<span class="m"><i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>), <i>C</i> ∈ <i>M</i><sub><i>t</i>×<i>n</i></sub>(<i>P</i>)</span>);</li>
+            <li>б) <span class="m"><i>D</i>(<i>A</i> + <i>B</i>) = <i>DA</i> + <i>DB</i></span> &nbsp; (<span class="m"><i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>), <i>D</i> ∈ <i>M</i><sub><i>k</i>×<i>m</i></sub>(<i>P</i>)</span>);</li>
+            <li>в) <span class="m"><i>E</i><sub><i>m</i></sub><i>A</i> = <i>A</i></span> и <span class="m"><i>A</i><i>E</i><sub><i>t</i></sub> = <i>A</i></span> &nbsp; (<span class="m"><i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>), <i>E</i><sub><i>m</i></sub> ∈ <i>M</i><sub><i>m</i></sub>(<i>P</i>), <i>E</i><sub><i>t</i></sub> ∈ <i>M</i><sub><i>t</i></sub>(<i>P</i>)</span>).</li>
+          </ul>
+        </li>
+        <li><strong>Транспонирование произведения:</strong> <span class="m">∀<i>A</i> ∈ <i>M</i><sub><i>m</i>×<i>t</i></sub>(<i>P</i>), ∀<i>B</i> ∈ <i>M</i><sub><i>t</i>×<i>n</i></sub>(<i>P</i>) : (<i>AB</i>)<sup><i>T</i></sup> = <i>B</i><sup><i>T</i></sup><i>A</i><sup><i>T</i></sup></span>.</li>
+      </ol>
+    `,
+    criteria: [
+      "В каждом свойстве размеры матриц согласованы для умножения",
+      "Верные скобки в ассоциативности: (AB)C = A(BC)",
+      "В (AB)ᵀ = BᵀAᵀ порядок сомножителей поменян местами!"
+    ]
+  },
+  {
+    id: "m5_detab", module: 5, type: "thm", pages: "стр. 42–43",
+    title: "Теорема 2 (Об определителе произведения квадратных матриц)",
+    prompt: "Сформулируйте Теорему 2 об определителе произведения матриц.",
+    hints: "Обязательно: A, B ∈ Mₙ(P) — квадратные одного порядка!",
+    answer: `
+      <p><strong>Теорема 2:</strong> Для любых квадратных матриц одного порядка <span class="m"><i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>:</p>
+      <div class="mb">det(<i>AB</i>) = det <i>A</i> · det <i>B</i>.</div>
+    `,
+    criteria: [
+      "Указано ∀A, B ∈ Mₙ(P) (квадратные матрицы одного порядка n)",
+      "Верная формула det(AB) = det A · det B"
+    ]
+  },
+  {
+    id: "m5_inv_def", module: 5, type: "def", pages: "стр. 44–45",
+    title: "Обратная матрица, невырожденная матрица и присоединённая матрица A*",
+    prompt: "Дайте определения обратной матрицы, невырожденной матрицы и присоединённой матрицы A*.",
+    hints: "A, B ∈ Mₙ(P): AB = BA = E; невырожденная: det A ≠ 0; A* — алг. дополнения строк записаны в столбцы.",
+    answer: `
+      <ul class="ans-list">
+        <li>Пусть <span class="m"><i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>. Матрица <span class="m"><i>B</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span> называется <strong>обратной к <span class="m"><i>A</i></span></strong> (обозначается <span class="m"><i>A</i><sup>−1</sup></span>), если <span class="m"><i>AB</i> = <i>BA</i> = <i>E</i></span>.</li>
+        <li>Квадратная матрица <span class="m"><i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span> называется <strong>невырожденной</strong>, если <span class="m">det <i>A</i> ≠ 0</span>.</li>
+        <li><strong>Присоединённой матрицей</strong> <span class="m"><i>A</i><sup>*</sup></span> к <span class="m"><i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span> называется матрица, у которой алгебраические дополнения к элементам строк матрицы <span class="m"><i>A</i></span> записаны в соответствующие столбцы (<span class="m">(<i>A</i><sup>*</sup>)<sub><i>ij</i></sub> = <i>A</i><table class="perm"><tr><td><i>j</i></td></tr><tr><td><i>i</i></td></tr></table></span>):
+          <div class="mb">
+            <i>A</i><sup>*</sup> = <table class="mat">
+              <tr><td><i>A</i><table class="perm"><tr><td>1</td></tr><tr><td>1</td></tr></table></td><td><i>A</i><table class="perm"><tr><td>2</td></tr><tr><td>1</td></tr></table></td><td>…</td><td><i>A</i><table class="perm"><tr><td><i>n</i></td></tr><tr><td>1</td></tr></table></td></tr>
+              <tr><td><i>A</i><table class="perm"><tr><td>1</td></tr><tr><td>2</td></tr></table></td><td><i>A</i><table class="perm"><tr><td>2</td></tr><tr><td>2</td></tr></table></td><td>…</td><td><i>A</i><table class="perm"><tr><td><i>n</i></td></tr><tr><td>2</td></tr></table></td></tr>
+              <tr><td>⋮</td><td>⋮</td><td>⋱</td><td>⋮</td></tr>
+              <tr><td><i>A</i><table class="perm"><tr><td>1</td></tr><tr><td><i>n</i></td></tr></table></td><td><i>A</i><table class="perm"><tr><td>2</td></tr><tr><td><i>n</i></td></tr></table></td><td>…</td><td><i>A</i><table class="perm"><tr><td><i>n</i></td></tr><tr><td><i>n</i></td></tr></table></td></tr>
+            </table>.
+          </div>
+        </li>
+      </ul>
+    `,
+    criteria: [
+      "Указано, что A и B квадратные: A, B ∈ Mₙ(P)",
+      "Записано двустороннее равенство AB = BA = E",
+      "Невырожденная: det A ≠ 0",
+      "В A* не перепутаны строки и столбцы: (A*)ᵢⱼ = A(j / i)"
+    ]
+  },
+  {
+    id: "m5_inv_uniq", module: 5, type: "prop", pages: "стр. 44",
+    title: "Предложение 1 (единственность обратной матрицы)",
+    prompt: "Сформулируйте Предложение 1 о единственности обратной матрицы.",
+    hints: "Если обратная существует, то она единственна.",
+    answer: `
+      <p><strong>Предложение 1:</strong> Обратная матрица к матрице <span class="m"><i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>, если она существует, <strong>единственна</strong>.</p>
+    `,
+    criteria: [
+      "Указано A ∈ Mₙ(P)",
+      "Указана оговорка «если она существует» и вывод «единственна»"
+    ]
+  },
+  {
+    id: "m5_inv_thm1", module: 5, type: "thm", pages: "стр. 44–45",
+    title: "Теорема 1 (критерий существования обратной матрицы) + формулы",
+    prompt: "Сформулируйте Теорему 1 о существовании обратной матрицы, а также формулы для A⁻¹ и det(A⁻¹).",
+    hints: "Критерий (⇔): ∃A⁻¹ ⇔ A невырожденная (det A ≠ 0); A⁻¹ = (1/det A)·A*; det(A⁻¹) = 1/det A.",
+    answer: `
+      <p><strong>Теорема 1:</strong> Пусть <span class="m"><i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>. Тогда:</p>
+      <div class="mb">существует обратная к <i>A</i> матрица <i>A</i><sup>−1</sup> &nbsp; ⇔ &nbsp; <i>A</i> — невырожденная (т.е. det <i>A</i> ≠ 0).</div>
+      <p>При этом справедливы формулы:</p>
+      <div class="mb">
+        <i>A</i><sup>−1</sup> = <span class="frac"><span>1</span><span>det <i>A</i></span></span> <i>A</i><sup>*</sup>,
+        &nbsp;&nbsp;&nbsp;
+        det(<i>A</i><sup>−1</sup>) = <span class="frac"><span>1</span><span>det <i>A</i></span></span> ≠ 0.
+      </div>
+    `,
+    criteria: [
+      "Указано A ∈ Mₙ(P)",
+      "Сформулирован именно критерий (тогда и только тогда / ⇔)",
+      "Верно записаны формулы A⁻¹ = (1/det A)·A* и det(A⁻¹) = 1/det A"
+    ]
+  },
+  {
+    id: "m5_inv_thm2", module: 5, type: "thm", pages: "стр. 47",
+    title: "Теорема 2 (обратная к произведению матриц)",
+    prompt: "Сформулируйте Теорему 2 об обратной матрице к произведению AB.",
+    hints: "A, B ∈ Mₙ(P), det A ≠ 0, det B ≠ 0 ⇒ (AB)⁻¹ = B⁻¹A⁻¹.",
+    answer: `
+      <p><strong>Теорема 2:</strong> Пусть <span class="m"><i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>)</span>, <span class="m">det <i>A</i> ≠ 0</span>, <span class="m">det <i>B</i> ≠ 0</span>. Тогда матрица <span class="m"><i>AB</i></span> обратима и:</p>
+      <div class="mb">(<i>A</i> · <i>B</i>)<sup>−1</sup> = <i>B</i><sup>−1</sup> <i>A</i><sup>−1</sup>.</div>
+    `,
+    criteria: [
+      "Указаны условия A, B ∈ Mₙ(P) и невырожденность (det A ≠ 0, det B ≠ 0)",
+      "Правильный обратный порядок множителей: B⁻¹A⁻¹"
+    ]
+  },
+  {
+    id: "m5_gln", module: 5, type: "prop", pages: "стр. 47",
+    title: "Предложение о группе невырожденных матриц GLₙ(P)",
+    prompt: "Дайте определение множества GLₙ(P) и сформулируйте предложение о нём.",
+    hints: "GLₙ(P) = {A ∈ Mₙ(P) | A — невырожденная}; образует группу относительно умножения матриц.",
+    answer: `
+      <p><strong>Предложение:</strong> Множество всех невырожденных матриц порядка <span class="m"><i>n</i></span> над полем <span class="m"><i>P</i></span></p>
+      <div class="mb"><i>GL</i><sub><i>n</i></sub>(<i>P</i>) = { <i>A</i> ∈ <i>M</i><sub><i>n</i></sub>(<i>P</i>) | <i>A</i> — невырожденная (det <i>A</i> ≠ 0) }</div>
+      <p>образует <strong>группу относительно умножения матриц</strong>. <span class="m"><i>GL</i><sub><i>n</i></sub>(<i>P</i>)</span> называется <strong>группой невырожденных матриц</strong> (полной линейной группой).</p>
+    `,
+    criteria: [
+      "Точно задано множество GLₙ(P) через A ∈ Mₙ(P) и det A ≠ 0",
+      "Указано, что это группа именно относительно УМНОЖЕНИЯ матриц"
+    ]
+  },
+
+  // ===== MODULE 6 =====
+  {
+    id: "m6_pn", module: 6, type: "def", pages: "стр. 48–49",
+    title: "Арифметическое линейное пространство (Pⁿ, +, ·) и операции в нём",
+    prompt: "Дайте определение арифметического линейного пространства Pⁿ, равенства векторов и операций над ними.",
+    hints: "P — поле, n ∈ ℕ; Pⁿ = {(a₁,…,aₙ) | aᵢ ∈ P}; покоординатные равенство, сложение и умножение на α ∈ P.",
+    answer: `
+      <p>Пусть <span class="m"><i>P</i></span> — поле, <span class="m"><i>n</i> ∈ ℕ</span>. Рассмотрим множество упорядоченных наборов:</p>
+      <div class="mb"><i>P</i><sup><i>n</i></sup> = { (<i>a</i><sub>1</sub>, <i>a</i><sub>2</sub>, …, <i>a</i><sub><i>n</i></sub>) | <i>a</i><sub><i>i</i></sub> ∈ <i>P</i>, &nbsp; <i>i</i> = 1, …, <i>n</i> }.</div>
+      <ul class="ans-list">
+        <li><strong>Равенство:</strong> <span class="m"><i>a</i> = <i>b</i> ⇔ <i>a</i><sub>1</sub> = <i>b</i><sub>1</sub>, …, <i>a</i><sub><i>n</i></sub> = <i>b</i><sub><i>n</i></sub></span>.</li>
+        <li><strong>Сложение (+):</strong> <span class="m"><i>a</i> + <i>b</i> = (<i>a</i><sub>1</sub> + <i>b</i><sub>1</sub>, …, <i>a</i><sub><i>n</i></sub> + <i>b</i><sub><i>n</i></sub>) ∈ <i>P</i><sup><i>n</i></sup></span>.</li>
+        <li><strong>Умножение на число (·):</strong> для <span class="m"><i>α</i> ∈ <i>P</i></span>: <span class="m"><i>α</i> · <i>a</i> = (<i>α</i><i>a</i><sub>1</sub>, …, <i>α</i><i>a</i><sub><i>n</i></sub>) ∈ <i>P</i><sup><i>n</i></sup></span>.</li>
+      </ul>
+      <p>Тройка <span class="m">(<i>P</i><sup><i>n</i></sup>, +, ·)</span> называется <strong>арифметическим линейным пространством</strong>, а его элементы — <strong>векторами</strong>.</p>
+    `,
+    criteria: [
+      "Указано, что P — поле, n ∈ ℕ",
+      "Верно определены множество Pⁿ, равенство и обе покоординатные операции",
+      "Названо (Pⁿ, +, ·) и что элементы — векторы"
+    ]
+  },
+  {
+    id: "m6_pn_props", module: 6, type: "props", pages: "стр. 49",
+    title: "8 свойств операций в Pⁿ (аксиомы линейного пространства)",
+    prompt: "Перечислите все 8 свойств операций сложения и умножения на число в Pⁿ.",
+    hints: "4 по сложению (коммут., ассоц., 0, −a) + 4 по умножению на число (1·a, дистр. 2 шт., ассоц. α(βa)).",
+    answer: `
+      <ol class="ans-list">
+        <li><span class="m">∀<i>a</i>, <i>b</i> ∈ <i>P</i><sup><i>n</i></sup> : <i>a</i> + <i>b</i> = <i>b</i> + <i>a</i></span> (коммутативность);</li>
+        <li><span class="m">∀<i>a</i>, <i>b</i>, <i>c</i> ∈ <i>P</i><sup><i>n</i></sup> : (<i>a</i> + <i>b</i>) + <i>c</i> = <i>a</i> + (<i>b</i> + <i>c</i>)</span> (ассоциативность);</li>
+        <li><span class="m">∃0 ∈ <i>P</i><sup><i>n</i></sup> : 0 + <i>a</i> = <i>a</i> + 0 = <i>a</i> &nbsp; ∀<i>a</i> ∈ <i>P</i><sup><i>n</i></sup></span>;</li>
+        <li><span class="m">∀<i>a</i> ∈ <i>P</i><sup><i>n</i></sup> ∃(−<i>a</i>) ∈ <i>P</i><sup><i>n</i></sup> : <i>a</i> + (−<i>a</i>) = (−<i>a</i>) + <i>a</i> = 0</span>;</li>
+        <li><span class="m">1 ∈ <i>P</i>, &nbsp; ∀<i>a</i> ∈ <i>P</i><sup><i>n</i></sup> : 1 · <i>a</i> = <i>a</i></span>;</li>
+        <li><span class="m">∀<i>α</i>, <i>β</i> ∈ <i>P</i>, ∀<i>a</i> ∈ <i>P</i><sup><i>n</i></sup> : (<i>α</i> + <i>β</i>)<i>a</i> = <i>α</i><i>a</i> + <i>β</i><i>a</i></span>;</li>
+        <li><span class="m">∀<i>α</i> ∈ <i>P</i>, ∀<i>a</i>, <i>b</i> ∈ <i>P</i><sup><i>n</i></sup> : <i>α</i>(<i>a</i> + <i>b</i>) = <i>α</i><i>a</i> + <i>α</i><i>b</i></span>;</li>
+        <li><span class="m">∀<i>α</i>, <i>β</i> ∈ <i>P</i>, ∀<i>a</i> ∈ <i>P</i><sup><i>n</i></sup> : <i>α</i>(<i>β</i><i>a</i>) = (<i>α</i><i>β</i>)<i>a</i> = <i>β</i>(<i>α</i><i>a</i>)</span>.</li>
+      </ol>
+    `,
+    criteria: [
+      "Все 8 свойств записаны без пропусков",
+      "В свойстве 2 правильно: (a + b) + c = a + (b + c)!",
+      "Для каждого свойства указаны кванторы (что из P, а что из Pⁿ)"
+    ],
+    examNote: "⚠️ В твоём конспекте на стр. 49 опечатка в п. 2: написано (a+b)+c = (a+c)+b. Правильно: a+(b+c)!"
+  },
+  {
+    id: "m6_subsp", module: 6, type: "def", pages: "стр. 50",
+    title: "Линейное подпространство в Pⁿ",
+    prompt: "Дайте строгое определение линейного подпространства в Pⁿ.",
+    hints: "V ≠ ∅ и V ⊆ Pⁿ (НЕ ∈!); замкнутость по сложению и по умножению на число.",
+    answer: `
+      <p>Пусть <strong><span class="m"><i>V</i> ≠ ∅</span></strong> и <strong><span class="m"><i>V</i> ⊆ <i>P</i><sup><i>n</i></sup></span></strong>. Множество <span class="m"><i>V</i></span> называется <strong>линейным подпространством</strong> в <span class="m"><i>P</i><sup><i>n</i></sup></span>, если выполняются два условия:</p>
+      <ol class="ans-list">
+        <li><span class="m">∀<i>a</i>, <i>b</i> ∈ <i>V</i> : <i>a</i> + <i>b</i> ∈ <i>V</i></span> (замкнутость относительно сложения);</li>
+        <li><span class="m">∀<i>a</i> ∈ <i>V</i>, ∀<i>α</i> ∈ <i>P</i> : <i>α</i> · <i>a</i> ∈ <i>V</i></span> (замкнутость относительно умножения на число).</li>
+      </ol>
+    `,
+    criteria: [
+      "Обязательно написано V ≠ ∅",
+      "Написан знак подмножества V ⊆ Pⁿ (НЕ V ∈ Pⁿ!)",
+      "Замкнутость сложения с квантором ∀a, b ∈ V",
+      "Замкнутость умножения на число с кванторами ∀a ∈ V, ∀α ∈ P"
+    ],
+    examNote: "⚠️ На стр. 50 в тетради написано V ∈ Pⁿ — это описка! На опросе обязательно пиши V ⊆ Pⁿ (или V ⊂ Pⁿ)."
+  },
+  {
+    id: "m6_lincomb", module: 6, type: "def", pages: "стр. 52",
+    title: "Линейная комбинация и тривиальная линейная комбинация",
+    prompt: "Дайте определения линейной комбинации векторов и тривиальной линейной комбинации.",
+    hints: "a₁,…,aₖ ∈ Pⁿ, α₁,…,αₖ ∈ P; вектор α₁a₁+…+αₖaₖ; тривиальная: все αᵢ = 0.",
+    answer: `
+      <p>Пусть <span class="m"><i>a</i><sub>1</sub>, <i>a</i><sub>2</sub>, …, <i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></span> и <span class="m"><i>α</i><sub>1</sub>, <i>α</i><sub>2</sub>, …, <i>α</i><sub><i>k</i></sub> ∈ <i>P</i></span>. Вектор</p>
+      <div class="mb"><i>α</i><sub>1</sub><i>a</i><sub>1</sub> + <i>α</i><sub>2</sub><i>a</i><sub>2</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></div>
+      <p>называется <strong>линейной комбинацией</strong> векторов <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub></span>.</p>
+      <p>Линейная комбинация называется <strong>тривиальной</strong>, если все её коэффициенты равны нулю: <span class="m"><i>α</i><sub>1</sub> = <i>α</i><sub>2</sub> = … = <i>α</i><sub><i>k</i></sub> = 0</span> (то есть <span class="m">0·<i>a</i><sub>1</sub> + … + 0·<i>a</i><sub><i>k</i></sub> = 0</span>). Если хотя бы один коэффициент <span class="m"><i>α</i><sub><i>i</i></sub> ≠ 0</span>, т.е. <span class="m">(<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub>) ≠ (0, …, 0)</span>, комбинация называется <strong>нетривиальной</strong>.</p>
+    `,
+    criteria: [
+      "Указано a₁, …, aₖ ∈ Pⁿ и α₁, …, αₖ ∈ P",
+      "Записано выражение α₁a₁ + … + αₖaₖ",
+      "Тривиальная определена через равенство нулю ВСЕХ коэффициентов α₁ = … = αₖ = 0"
+    ]
+  },
+  {
+    id: "m6_span", module: 6, type: "def", pages: "стр. 52",
+    title: "Линейная оболочка и Предложение о ней",
+    prompt: "Дайте определение линейной оболочки векторов a₁, …, aₖ и сформулируйте предложение о ней.",
+    hints: "⟨a₁,…,aₖ⟩ = {α₁a₁+…+αₖaₖ | αᵢ ∈ P}; является подпространством в Pⁿ; обозначения L(…), span(…).",
+    answer: `
+      <p>Пусть <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></span>. Рассмотрим множество всех линейных комбинаций этих векторов:</p>
+      <div class="mb">⟨<i>a</i><sub>1</sub>, <i>a</i><sub>2</sub>, …, <i>a</i><sub><i>k</i></sub>⟩ = { <i>α</i><sub>1</sub><i>a</i><sub>1</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub> | <i>α</i><sub><i>i</i></sub> ∈ <i>P</i>, &nbsp; <i>i</i> = 1, …, <i>k</i> }.</div>
+      <p><strong>Предложение:</strong> Для любых <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></span> множество <span class="m">⟨<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>⟩</span> является <strong>линейным подпространством</strong> в <span class="m"><i>P</i><sup><i>n</i></sup></span>.</p>
+      <p><strong>Определение:</strong> Подпространство <span class="m">⟨<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>⟩</span> называется <strong>линейной оболочкой</strong> векторов <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub></span>. Обозначения: <span class="m">⟨<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>⟩</span>, <span class="m"><i>L</i>(<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>)</span>, <span class="m">span(<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>)</span>.</p>
+    `,
+    criteria: [
+      "Задано множество всех линейных комбинаций с αᵢ ∈ P",
+      "Сформулировано Предложение (не «предположение»!), что это подпространство в Pⁿ",
+      "Дано название «линейная оболочка» и обозначения"
+    ]
+  },
+
+  // ===== MODULE 7 =====
+  {
+    id: "m7_ld_li", module: 7, type: "def", pages: "стр. 53",
+    title: "Линейно зависимая и линейно независимая системы векторов",
+    prompt: "Дайте строгие определения линейно зависимой (л.з.) и линейно независимой (л.н.) систем векторов в Pⁿ.",
+    hints: "л.з.: ∃ нетривиальная л.к. = 0 ((α₁,…,αₖ) ≠ (0,…,0)); л.н.: α₁a₁+…+αₖaₖ = 0 ⇒ α₁=…=αₖ=0.",
+    answer: `
+      <ul class="ans-list">
+        <li>Векторы <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></span> называются <strong>линейно зависимыми (л.з.)</strong>, если существует <strong>нетривиальная</strong> их линейная комбинация, равная нулевому вектору:
+          <div class="mb">∃<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub> ∈ <i>P</i>, &nbsp; (<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub>) ≠ (0, …, 0) : &nbsp; <i>α</i><sub>1</sub><i>a</i><sub>1</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub> = 0.</div>
+        </li>
+        <li>Векторы <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub> ∈ <i>P</i><sup><i>n</i></sup></span> называются <strong>линейно независимыми (л.н.)</strong>, если <strong>только тривиальная</strong> их линейная комбинация равна нулевому вектору:
+          <div class="mb"><i>α</i><sub>1</sub><i>a</i><sub>1</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub> = 0 &nbsp; ⇒ &nbsp; <i>α</i><sub>1</sub> = <i>α</i><sub>2</sub> = … = <i>α</i><sub><i>k</i></sub> = 0.</div>
+        </li>
+      </ul>
+    `,
+    criteria: [
+      "В л.з. явно записано, что (α₁, …, αₖ) ≠ (0, …, 0) (хотя бы один αᵢ ≠ 0)",
+      "В л.з. стоит квантор ∃α₁, …, αₖ ∈ P",
+      "В л.н. записана импликация: α₁a₁ + … + αₖaₖ = 0 ⇒ α₁ = … = αₖ = 0"
+    ]
+  },
+  {
+    id: "m7_ld_thm", module: 7, type: "thm", pages: "стр. 55–57",
+    title: "Теорема (6 свойств линейной зависимости и независимости)",
+    prompt: "Сформулируйте все 6 утверждений теоремы о свойствах л.з. и л.н. систем векторов.",
+    hints: "1) подсистема л.н.; 2) надсистема л.з.; 3) при k ≥ 2: л.з. ⇔ один из них л.к. остальных; 4–5) добавление b к л.н.; 6) с нулевым вектором.",
+    answer: `
+      <ol class="ans-list">
+        <li>Если система векторов л.н., то <strong>любая её (непустая) подсистема</strong> л.н.</li>
+        <li>Если какая-либо подсистема векторов л.з., то и <strong>вся система</strong> л.з.</li>
+        <li>Пусть <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span>, <strong><span class="m"><i>k</i> ≥ 2</span></strong>. Тогда <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — л.з. <span class="m">⇔ ∃<i>i</i> (1 ≤ <i>i</i> ≤ <i>k</i>)</span> : <span class="m"><i>a</i><sub><i>i</i></sub></span> является линейной комбинацией остальных векторов.</li>
+        <li>Если <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — л.н., а <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>, <i>b</i>}</span> — л.з., то <span class="m"><i>b</i></span> является линейной комбинацией <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub></span>.</li>
+        <li>Если <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — л.н. и <span class="m"><i>b</i></span> не является линейной комбинацией <span class="m"><i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub></span>, то <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>, <i>b</i>}</span> — л.н.</li>
+        <li>Система векторов, содержащая нулевой вектор, линейно зависима.</li>
+      </ol>
+    `,
+    criteria: [
+      "Перечислены все 6 свойств без пропусков",
+      "В пункте 3 ОБЯЗАТЕЛЬНО указано условие k ≥ 2",
+      "В пункте 3 стоит равносильность (⇔), а не односторонняя стрелка",
+      "В пунктах 4 и 5 не забыто условие, что исходная система {a₁, …, aₖ} линейно независима"
+    ]
+  },
+  {
+    id: "m7_basis", module: 7, type: "def", pages: "стр. 58–59",
+    title: "Базис подпространства (и стандартный базис в ℝⁿ)",
+    prompt: "Дайте определение базиса линейного подпространства V ⊆ ℝⁿ (или Pⁿ).",
+    hints: "V ⊆ ℝⁿ, V ≠ ∅, V — подпространство; e₁,…,eₖ ∈ V: (1) л.н., (2) ∀v∈V раскладывается (V = ⟨e₁,…,eₖ⟩).",
+    answer: `
+      <p>Пусть <span class="m"><i>V</i> ⊆ ℝ<sup><i>n</i></sup></span> (или <span class="m"><i>P</i><sup><i>n</i></sup></span>), <span class="m"><i>V</i> ≠ ∅</span>, <span class="m"><i>V</i></span> — линейное подпространство.</p>
+      <p>Система векторов <span class="m">{<i>e</i><sub>1</sub>, <i>e</i><sub>2</sub>, …, <i>e</i><sub><i>k</i></sub>}</span> (<span class="m"><i>e</i><sub><i>i</i></sub> ∈ <i>V</i>, <i>i</i> = <span class="ov">1, <i>k</i></span></span>) называется <strong>базисом подпространства <span class="m"><i>V</i></span></strong>, если выполняются два условия:</p>
+      <ol class="ans-list">
+        <li><span class="m"><i>e</i><sub>1</sub>, <i>e</i><sub>2</sub>, …, <i>e</i><sub><i>k</i></sub></span> — <strong>линейно независимы</strong>;</li>
+        <li><span class="m">∀<i>v</i> ∈ <i>V</i> ∃<i>α</i><sub>1</sub>, …, <i>α</i><sub><i>k</i></sub> ∈ ℝ (<i>P</i>) : <i>v</i> = <i>α</i><sub>1</sub><i>e</i><sub>1</sub> + … + <i>α</i><sub><i>k</i></sub><i>e</i><sub><i>k</i></sub></span> &nbsp; (эквивалентно: <span class="m"><i>V</i> = ⟨<i>e</i><sub>1</sub>, …, <i>e</i><sub><i>k</i></sub>⟩</span>).</li>
+      </ol>
+      <p style="font-size:13px;color:var(--muted);"><em>Стандартный базис в <span class="m">ℝ<sup><i>n</i></sup></span>:</em> <span class="m"><i>e</i><sub>1</sub>=(1,0,…,0), …, <i>e</i><sub><i>n</i></sub>=(0,…,0,1)</span>.</p>
+    `,
+    criteria: [
+      "Указано V ⊆ ℝⁿ (Pⁿ), V ≠ ∅, V — подпространство, и eᵢ ∈ V",
+      "Условие 1: система e₁, …, eₖ линейно независима",
+      "Условие 2: любой v ∈ V представим как л.к. (или V = ⟨e₁, …, eₖ⟩)"
+    ]
+  },
+  {
+    id: "m7_crit", module: 7, type: "thm", pages: "стр. 59–60",
+    title: "Теорема (Критерий базиса)",
+    prompt: "Сформулируйте Теорему «Критерий базиса».",
+    hints: "{a₁,…,aₖ} — базис V ⇔ ∀v ∈ V ЕДИНСТВЕННЫМ ОБРАЗОМ раскладывается по a₁,…,aₖ.",
+    answer: `
+      <p><strong>Теорема (Критерий базиса):</strong> Пусть <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — система векторов из линейного подпространства <span class="m"><i>V</i> ⊆ ℝ<sup><i>n</i></sup></span> (<span class="m"><i>V</i> ≠ ∅</span>). Тогда:</p>
+      <div class="mb">
+        {<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>} — базис <i>V</i> &nbsp; ⇔ &nbsp; ∀<i>v</i> ∈ <i>V</i> &nbsp; <b>единственным образом</b> представляется в виде &nbsp; <i>v</i> = <i>α</i><sub>1</sub><i>a</i><sub>1</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub> &nbsp; (<i>α</i><sub><i>i</i></sub> ∈ ℝ, <i>i</i> = <span class="ov">1, <i>k</i></span>).
+      </div>
+    `,
+    criteria: [
+      "Указано, что a₁, …, aₖ принадлежат подпространству V ⊆ ℝⁿ (Pⁿ)",
+      "Сформулирована именно равносильность (⇔)",
+      "Присутствуют оба ключевых слова: «для любого v ∈ V» и «ЕДИНСТВЕННЫМ ОБРАЗОМ»"
+    ]
+  },
+  {
+    id: "m7_coords", module: 7, type: "def", pages: "стр. 60",
+    title: "Координаты вектора в базисе",
+    prompt: "Дайте определение координат вектора v в базисе {a₁, …, aₖ}.",
+    hints: "V ⊆ ℝⁿ, V ≠ ∅, {a₁,…,aₖ} — базис V; v = α₁a₁ + … + αₖaₖ; упорядоченный набор (α₁,…,αₖ).",
+    answer: `
+      <p>Пусть <span class="m"><i>V</i> ⊆ ℝ<sup><i>n</i></sup></span> (<span class="m"><i>V</i> ≠ ∅</span>) — подпространство, <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — (упорядоченный) базис <span class="m"><i>V</i></span>, и вектор <span class="m"><i>v</i> ∈ <i>V</i></span> разложен по этому базису:</p>
+      <div class="mb"><i>v</i> = <i>α</i><sub>1</sub><i>a</i><sub>1</sub> + <i>α</i><sub>2</sub><i>a</i><sub>2</sub> + … + <i>α</i><sub><i>k</i></sub><i>a</i><sub><i>k</i></sub>, &nbsp; <i>α</i><sub><i>i</i></sub> ∈ ℝ (<i>P</i>), &nbsp; <i>i</i> = <span class="ov">1, <i>k</i></span>.</div>
+      <p>Тогда набор чисел <span class="m">(<i>α</i><sub>1</sub>, <i>α</i><sub>2</sub>, …, <i>α</i><sub><i>k</i></sub>)</span> называется <strong>координатами вектора <span class="m"><i>v</i></span> в базисе <span class="m">{<i>a</i><sub>1</sub>, …, <i>a</i><sub><i>k</i></sub>}</span></strong>.</p>
+    `,
+    criteria: [
+      "Указано, что {a₁, …, aₖ} — базис подпространства V",
+      "Записано разложение v = α₁a₁ + … + αₖaₖ",
+      "Координаты названы именно набором чисел (α₁, …, αₖ)"
+    ]
+  },
+  {
+    id: "m7_sk", module: 7, type: "thm", pages: "стр. 61",
+    title: "Теорема о линейно независимой системе векторов (s ≤ k)",
+    prompt: "Сформулируйте последнюю теорему из лекций — о линейно независимой системе векторов в подпространстве с базисом.",
+    hints: "V ⊆ ℝⁿ, V ≠ ∅, {a₁,…,aₖ} — базис V, {b₁,…,bₛ} ⊆ V — л.н. ⇒ s ≤ k.",
+    answer: `
+      <p><strong>Теорема (о линейно независимой системе векторов):</strong> Пусть <span class="m"><i>V</i> ⊆ ℝ<sup><i>n</i></sup></span> (<span class="m"><i>V</i> ≠ ∅</span>) — линейное подпространство, <span class="m">{<i>a</i><sub>1</sub>, <i>a</i><sub>2</sub>, …, <i>a</i><sub><i>k</i></sub>}</span> — базис <span class="m"><i>V</i></span>, а <span class="m">{<i>b</i><sub>1</sub>, <i>b</i><sub>2</sub>, …, <i>b</i><sub><i>s</i></sub>} ⊆ <i>V</i></span> — линейно независимая система векторов из <span class="m"><i>V</i></span>. Тогда:</p>
+      <div class="mb"><i>s</i> ≤ <i>k</i>.</div>
+    `,
+    criteria: [
+      "Указано V ⊆ ℝⁿ (НЕ V ∈ ℝⁿ!), V ≠ ∅ — подпространство",
+      "Указано, что {a₁, …, aₖ} — базис V (k векторов)",
+      "Указано, что {b₁, …, bₛ} — линейно независимая система векторов ИЗ V",
+      "Верное неравенство s ≤ k"
+    ],
+    examNote: "⚠️ На стр. 61 в тетради написано V ∈ ℝⁿ и не уточнено bᵢ ∈ V — обязательно пиши V ⊆ ℝⁿ и b₁,…,bₛ ∈ V!"
+  }
+];
+
+const FIXES = [
+  { page: "стр. 16", topic: "Теорема 5 (разложение на транспозиции)", bad: "«Чётность подстановки совпадает с <b>количеством</b> этих транспозиций в произведении»", good: "«Чётность подстановки совпадает с <b>чётностью количества</b> этих транспозиций в произведении»" },
+  { page: "стр. 21", topic: "Пример определителя 3-го порядка", bad: "<span class='m'>−<i>a</i><sub>11</sub><i>a</i><sub>23</sub><i>a</i><sub>33</sub> + <i>a</i><sub>12</sub><i>a</i><sub>23</sub><i>a</i><sub>32</sub></span> (повторяются столбцы!)", good: "<span class='m'>−<i>a</i><sub>11</sub><i>a</i><sub>23</sub><i>a</i><sub>32</sub> + <i>a</i><sub>12</sub><i>a</i><sub>23</sub><i>a</i><sub>31</sub></span> (по одному из каждой строки и каждого столбца)" },
+  { page: "стр. 24", topic: "Свойство 8° определителя", bad: "Не указано явно, что <span class='m'><i>j</i> ≠ <i>i</i></span> (и описка «к (i) с строке»)", good: "К <span class='m'><i>i</i></span>-й строке прибавить <b><span class='m'><i>j</i></span>-ю (<span class='m'><i>j</i> ≠ <i>i</i></span>)</b> строку, умноженную на <span class='m'><i>t</i> ∈ <i>P</i></span>" },
+  { page: "стр. 26", topic: "Заголовок § 2", bad: "«Миноры и <b>алгоритмы</b> дополнения»", good: "«Миноры и <b>алгебраические</b> дополнения»" },
+  { page: "стр. 30", topic: "Формула Теоремы Лапласа", bad: "Пропущен знак <span class='m'>=</span> между <span class='m'>det <i>A</i></span> и <span class='m'>∑</span>", good: "<span class='m'>det <i>A</i> <b>=</b> ∑<sub>1≤<i>j</i>₁&lt;…&lt;<i>j</i>ₖ≤<i>n</i></sub> <i>M</i>(…) <i>A</i>(…)</span>" },
+  { page: "стр. 31", topic: "Следствия из теоремы Лапласа", bad: "В сумме по строке написано <span class='m'><i>A</i>(<i>i</i>/1)</span> и «+» вместо «=»; в столбце <span class='m'><i>a</i><sub><i>ij</i></sub></span> вместо <span class='m'><i>a</i><sub>1<i>j</i></sub></span>", good: "<span class='m'>det <i>A</i> = ∑<sub><i>j</i>=1</sub><sup><i>n</i></sup> <i>a</i><sub><i>ij</i></sub><i>A</i>(<i>i</i>/<i>j</i>) = <i>a</i><sub><i>i</i>1</sub><i>A</i>(<i>i</i>/1) + … + <i>a</i><sub><i>in</i></sub><i>A</i>(<i>i</i>/<i>n</i>)</span> (и аналогично для столбца с <span class='m'><i>a</i><sub>1<i>j</i></sub>…<i>a</i><sub><i>nj</i></sub></span>)" },
+  { page: "стр. 37", topic: "Свойство 2° сложения матриц", bad: "<span class='m'>∀<i>A</i>, <i>B</i> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span> (пропущена матрица <span class='m'><i>C</i></span>)", good: "<span class='m'>∀<i>A</i>, <i>B</i>, <b><i>C</i></b> ∈ <i>M</i><sub><i>m</i>×<i>n</i></sub>(<i>P</i>)</span>" },
+  { page: "стр. 40", topic: "Свойство 1 умножения матриц", bad: "<span class='m'><i>A</i>(<i>BC</i>) = <i>AB</i>(<i>C</i>)</span>", good: "<span class='m'><i>A</i>(<i>BC</i>) = (<i>AB</i>)<i>C</i></span>" },
+  { page: "стр. 49", topic: "Свойство 2 сложения векторов в Pⁿ", bad: "<span class='m'>(<i>a</i> + <i>b</i>) + <i>c</i> = (<i>a</i> + <i>c</i>) + <i>b</i></span> и пропущен квантор", good: "<span class='m'>∀<i>a</i>, <i>b</i>, <i>c</i> ∈ <i>P</i><sup><i>n</i></sup> : (<i>a</i> + <i>b</i>) + <i>c</i> = <i>a</i> + (<i>b</i> + <i>c</i>)</span>" },
+  { page: "стр. 50 и 61", topic: "Подпространство и теорема о л.н. системе", bad: "Написано <span class='m'><i>V</i> <b>∈</b> <i>P</i><sup><i>n</i></sup></span> и <span class='m'><i>V</i> <b>∈</b> ℝ<sup><i>n</i></sup></span> (знак элемента!)", good: "<b><span class='m'><i>V</i> ⊆ <i>P</i><sup><i>n</i></sup></span></b> и <b><span class='m'><i>V</i> ⊆ ℝ<sup><i>n</i></sup></span></b> (<span class='m'><i>V</i></span> — подмножество, а не вектор!)" },
+  { page: "стр. 52", topic: "Утверждение о линейной оболочке", bad: "«<b>Предположение</b>: <span class='m'>⟨<i>a</i><sub>1</sub>,…,<i>a</i><sub><i>k</i></sub>⟩</span> — подпространство»", good: "«<b>Предложение</b>» (утверждение, теорема малого масштаба)" },
+  { page: "стр. 61", topic: "Теорема о линейно независимой системе", bad: "Не дописано, что <span class='m'><i>b</i><sub>1</sub>, …, <i>b</i><sub><i>s</i></sub> ∈ <i>V</i></span>", good: "Обязательно указать: <span class='m'>{<i>b</i><sub>1</sub>, …, <i>b</i><sub><i>s</i></sub>} ⊆ <i>V</i></span> — л.н. система векторов <b>из <span class='m'><i>V</i></span></b>" }
+];
+
+// ===== STATE & PERSISTENCE =====
+const STORAGE_KEY = "linal_trainer_status_v1";
+const THEME_KEY = "linal_trainer_theme_v1";
+let statuses = {};
+try { statuses = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch {}
+
+function saveStatuses() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(statuses)); } catch {}
+  updateStats();
+}
+function getStatus(id) { return statuses[id] || "unseen"; }
+function setStatus(id, st) {
+  if (statuses[id] === st) delete statuses[id];
+  else statuses[id] = st;
+  saveStatuses();
+}
+
+// Theme
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  updateThemeBtn();
+}
+function updateThemeBtn() {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.getElementById("themeToggle").textContent = isDark ? "☀️" : "🌙";
+}
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  const next = isDark ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem(THEME_KEY, next);
+  updateThemeBtn();
+});
+
+// Stats
+function updateStats() {
+  const total = ITEMS.length;
+  let known = 0, review = 0, unseen = 0;
+  ITEMS.forEach(it => {
+    const s = getStatus(it.id);
+    if (s === "known") known++;
+    else if (s === "review" || s === "hard") review++;
+    else unseen++;
+  });
+  document.getElementById("stTotal").textContent = total;
+  document.getElementById("stKnown").textContent = known;
+  document.getElementById("stReview").textContent = review;
+  document.getElementById("stUnseen").textContent = unseen;
+  document.getElementById("stProg").style.width = Math.round((known / total) * 100) + "%";
+}
+
+// Populate module selects & checkboxes
+function populateModules() {
+  const refSel = document.getElementById("refModule");
+  const fcSel = document.getElementById("fcModule");
+  const quizChecks = document.getElementById("quizModChecks");
+  MODULES.forEach(m => {
+    refSel.insertAdjacentHTML("beforeend", `<option value="${m.id}">${m.name}</option>`);
+    fcSel.insertAdjacentHTML("beforeend", `<option value="${m.id}">${m.name}</option>`);
+    quizChecks.insertAdjacentHTML("beforeend", `
+      <label class="mod-check-lbl">
+        <input type="checkbox" class="qmod-cb" value="${m.id}" checked>
+        <span>${m.name}</span>
+      </label>
+    `);
+  });
+}
+
+// Tabs
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+    if (btn.dataset.tab === "cards") buildDeck();
+    if (btn.dataset.tab === "ref") renderRef();
+  });
+});
+
+// ===== TAB 1: REFERENCE =====
+let allCollapsed = false;
+function renderRef() {
+  const q = document.getElementById("refSearch").value.trim().toLowerCase();
+  const mod = document.getElementById("refModule").value;
+  const typ = document.getElementById("refType").value;
+  const stFilter = document.getElementById("refStatus").value;
+
+  const filtered = ITEMS.filter(it => {
+    if (mod !== "all" && String(it.module) !== mod) return false;
+    if (typ !== "all" && it.type !== typ) return false;
+    const s = getStatus(it.id);
+    if (stFilter !== "all" && s !== stFilter) return false;
+    if (q) {
+      const hay = (it.title + " " + it.prompt + " " + it.hints + " " + it.answer).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const list = document.getElementById("refList");
+  if (!filtered.length) {
+    list.innerHTML = `<div class="card" style="text-align:center;color:var(--muted);">По этим фильтрам ничего не найдено.</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(it => {
+    const s = getStatus(it.id);
+    const tl = TYPE_LABELS[it.type];
+    const modName = MODULES.find(m => m.id === it.module).name.split(" (")[0];
+    return `
+      <article class="card" data-id="${it.id}" data-status="${s}">
+        <div class="card-head" onclick="toggleCardBody('${it.id}')">
+          <div class="card-title-wrap">
+            <div class="card-meta">
+              <span class="badge ${tl.cls}">${tl.text}</span>
+              <span class="badge badge-page">${it.pages}</span>
+              <span class="badge badge-page">${modName}</span>
+              ${it.examNote ? `<span class="badge badge-warn">Важно!</span>` : ""}
+            </div>
+            <h3 class="card-title">${it.title}</h3>
+          </div>
+          <div class="status-pills" onclick="event.stopPropagation()">
+            <button class="pill ${s==='hard'?'active-hard':''}" onclick="markRef('${it.id}','hard')">Не знаю</button>
+            <button class="pill ${s==='review'?'active-review':''}" onclick="markRef('${it.id}','review')">Повторить</button>
+            <button class="pill ${s==='known'?'active-known':''}" onclick="markRef('${it.id}','known')">Выучено ✓</button>
+          </div>
+        </div>
+        <div class="card-body ${allCollapsed ? 'collapsed' : ''}" id="body-${it.id}">
+          ${it.answer}
+          ${it.examNote ? `<div class="note-box">${it.examNote}</div>` : ""}
+          <div class="criteria-box">
+            <div class="criteria-title">Чек-лист строгости (что проверит преподаватель):</div>
+            <ul>${it.criteria.map(c => `<li>${c}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+window.toggleCardBody = function(id) {
+  document.getElementById("body-" + id).classList.toggle("collapsed");
+};
+window.markRef = function(id, st) {
+  setStatus(id, st);
+  renderRef();
+};
+
+["refSearch", "refModule", "refType", "refStatus"].forEach(id => {
+  document.getElementById(id).addEventListener("input", renderRef);
+  document.getElementById(id).addEventListener("change", renderRef);
+});
+document.getElementById("toggleAllBtn").addEventListener("click", () => {
+  allCollapsed = !allCollapsed;
+  document.getElementById("toggleAllBtn").textContent = allCollapsed ? "Развернуть всё" : "Свернуть всё";
+  renderRef();
+});
+
+// ===== TAB 2: FLASHCARDS =====
+let deck = [];
+let fcIdx = 0;
+let fcRevealed = false;
+let fcHintShown = false;
+
+function buildDeck(shuffle = false) {
+  const mod = document.getElementById("fcModule").value;
+  const typ = document.getElementById("fcType").value;
+  const onlyWeak = document.getElementById("fcOnlyWeak").checked;
+
+  deck = ITEMS.filter(it => {
+    if (mod !== "all" && String(it.module) !== mod) return false;
+    if (typ !== "all" && it.type !== typ) return false;
+    if (onlyWeak && getStatus(it.id) === "known") return false;
+    return true;
+  });
+
+  if (shuffle) {
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+  }
+  fcIdx = 0;
+  fcRevealed = false;
+  fcHintShown = false;
+  renderCard();
+}
+
+function renderCard() {
+  const stage = document.getElementById("fcStage");
+  const counter = document.getElementById("fcCounter");
+  if (!deck.length) {
+    counter.textContent = "0 / 0";
+    stage.innerHTML = `<div style="text-align:center;margin:auto;padding:30px 10px;">
+      <h3>🎉 Все карточки по выбранным фильтрам выучены!</h3>
+      <p style="color:var(--muted);">Сними галочку «Только невыученные» или выбери другую тему.</p>
+    </div>`;
+    return;
+  }
+  if (fcIdx >= deck.length) fcIdx = 0;
+  const it = deck[fcIdx];
+  const tl = TYPE_LABELS[it.type];
+  const st = getStatus(it.id);
+  counter.textContent = `${fcIdx + 1} / ${deck.length}`;
+
+  stage.innerHTML = `
+    <div>
+      <div class="card-meta" style="justify-content:space-between;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge ${tl.cls}">${tl.text}</span>
+          <span class="badge badge-page">${it.pages}</span>
+          <span class="badge badge-page">${MODULES.find(m=>m.id===it.module).name.split(' (')[0]}</span>
+        </div>
+        <span style="font-size:12px;color:var(--muted);font-weight:600;">
+          Статус: ${st==='known'?'✅ Выучено':st==='review'?'🟡 Повторить':st==='hard'?'🔴 Не знаю':'⚪ Не начато'}
+        </span>
+      </div>
+      <div class="fc-prompt">${it.prompt}</div>
+      <div style="margin-top:8px;">
+        <button class="btn btn-sm" onclick="toggleFcHint()">💡 Подсказка (кванторы и ключевые слова)</button>
+      </div>
+      <div class="fc-hints ${fcHintShown?'show':''}" id="fcHintBox">
+        <strong>Опорные элементы:</strong> ${it.hints}
+      </div>
+      <div class="fc-answer ${fcRevealed?'show':''}" id="fcAnsBox">
+        ${it.answer}
+        ${it.examNote ? `<div class="note-box">${it.examNote}</div>` : ""}
+        <div class="criteria-box">
+          <div class="criteria-title">Проверь, ничего ли не забыл(а):</div>
+          <ul>${it.criteria.map(c => `<li>${c}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-actions">
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" onclick="fcMove(-1)">← Назад</button>
+        <button class="btn btn-sm" onclick="fcMove(1)">Вперёд →</button>
+      </div>
+      ${!fcRevealed ? `
+        <button class="btn btn-primary" onclick="revealFc()">Показать ответ <span class="kbd">Space</span></button>
+      ` : `
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-red" onclick="rateFc('hard')">Не помню <span class="kbd">1</span></button>
+          <button class="btn btn-amber" onclick="rateFc('review')">Повторить <span class="kbd">2</span></button>
+          <button class="btn btn-green" onclick="rateFc('known')">Знаю идеально <span class="kbd">3</span></button>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+window.toggleFcHint = function() {
+  fcHintShown = !fcHintShown;
+  document.getElementById("fcHintBox").classList.toggle("show", fcHintShown);
+};
+window.revealFc = function() {
+  fcRevealed = true;
+  renderCard();
+};
+window.fcMove = function(delta) {
+  if (!deck.length) return;
+  fcIdx = (fcIdx + delta + deck.length) % deck.length;
+  fcRevealed = false;
+  fcHintShown = false;
+  renderCard();
+};
+window.rateFc = function(st) {
+  if (!deck.length) return;
+  statuses[deck[fcIdx].id] = st;
+  saveStatuses();
+  if (document.getElementById("fcOnlyWeak").checked && st === "known") {
+    deck.splice(fcIdx, 1);
+    if (fcIdx >= deck.length) fcIdx = 0;
+  } else {
+    fcIdx = (fcIdx + 1) % deck.length;
+  }
+  fcRevealed = false;
+  fcHintShown = false;
+  renderCard();
+};
+
+["fcModule", "fcType", "fcOnlyWeak"].forEach(id => {
+  document.getElementById(id).addEventListener("change", () => buildDeck(false));
+});
+document.getElementById("fcShuffle").addEventListener("click", () => buildDeck(true));
+
+document.addEventListener("keydown", e => {
+  const cardsActive = document.getElementById("panel-cards").classList.contains("active");
+  if (!cardsActive || e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (e.code === "Space") { e.preventDefault(); if (!fcRevealed) revealFc(); }
+  else if (e.key === "ArrowRight") fcMove(1);
+  else if (e.key === "ArrowLeft") fcMove(-1);
+  else if (fcRevealed && e.key === "1") rateFc("hard");
+  else if (fcRevealed && e.key === "2") rateFc("review");
+  else if (fcRevealed && e.key === "3") rateFc("known");
+});
+
+// ===== TAB 3: 10-MINUTE QUIZ SIMULATOR =====
+let quizItems = [];
+let quizSeconds = 600;
+let quizInterval = null;
+let quizPaused = false;
+let quizFinished = false;
+
+function sample(arr, n) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function updateTimerUI() {
+  const el = document.getElementById("quizTimer");
+  el.textContent = formatTime(quizSeconds);
+  el.classList.remove("warn", "danger");
+  if (quizSeconds <= 60) el.classList.add("danger");
+  else if (quizSeconds <= 180) el.classList.add("warn");
+}
+
+function startTimer() {
+  clearInterval(quizInterval);
+  quizInterval = setInterval(() => {
+    if (quizPaused || quizFinished) return;
+    if (quizSeconds > 0) {
+      quizSeconds--;
+      updateTimerUI();
+    } else {
+      clearInterval(quizInterval);
+      finishQuiz(true);
+    }
+  }, 1000);
+}
+
+document.getElementById("startQuizBtn").addEventListener("click", () => {
+  const checkedMods = Array.from(document.querySelectorAll(".qmod-cb:checked")).map(cb => Number(cb.value));
+  if (!checkedMods.length) { alert("Выбери хотя бы одну тему!"); return; }
+  const pool = ITEMS.filter(it => checkedMods.includes(it.module));
+  const preset = document.getElementById("quizPreset").value;
+
+  const defs = pool.filter(it => it.type === "def");
+  const nonDefs = pool.filter(it => it.type !== "def");
+
+  if (preset === "std") {
+    quizItems = [...sample(defs, 2), ...sample(nonDefs, 2)];
+    quizSeconds = 10 * 60;
+  } else if (preset === "ext") {
+    quizItems = [...sample(defs, 3), ...sample(nonDefs, 3)];
+    quizSeconds = 15 * 60;
+  } else if (preset === "defs") {
+    quizItems = sample(defs, 4);
+    quizSeconds = 8 * 60;
+  } else if (preset === "thms") {
+    quizItems = sample(nonDefs, 4);
+    quizSeconds = 10 * 60;
+  } else if (preset === "weak") {
+    const weakPool = pool.filter(it => getStatus(it.id) !== "known");
+    if (!weakPool.length) { alert("В выбранных темах все пункты уже отмечены как «Выучено»!"); return; }
+    quizItems = sample(weakPool, Math.min(4, weakPool.length));
+    quizSeconds = 10 * 60;
+  }
+
+  if (!quizItems.length) { alert("В выбранных темах нет подходящих вопросов для этого режима."); return; }
+
+  quizPaused = false;
+  quizFinished = false;
+  document.getElementById("quizSetupView").style.display = "none";
+  document.getElementById("quizActiveView").style.display = "block";
+  document.getElementById("quizScoreArea").innerHTML = "";
+  document.getElementById("quizPauseBtn").textContent = "⏸ Пауза";
+  document.getElementById("quizPauseBtn").style.display = "";
+  document.getElementById("finishQuizBtn").style.display = "";
+  document.getElementById("quizTicketTitle").textContent = `Билет №${Math.floor(Math.random()*90)+10} (${quizItems.length} вопроса)`;
+
+  renderQuizQuestions(false);
+  updateTimerUI();
+  startTimer();
+});
+
+function renderQuizQuestions(showAnswers) {
+  const area = document.getElementById("quizQuestionsArea");
+  const prevNotes = [];
+  if (showAnswers) {
+    quizItems.forEach((_, idx) => {
+      const ta = document.getElementById("qta-" + idx);
+      prevNotes[idx] = ta ? ta.value : "";
+    });
+  }
+
+  area.innerHTML = quizItems.map((it, idx) => {
+    const tl = TYPE_LABELS[it.type];
+    return `
+      <div class="quiz-q">
+        <div class="card-meta">
+          <span class="badge ${tl.cls}">Вопрос ${idx + 1} • ${tl.text}</span>
+          <span class="badge badge-page">${it.pages}</span>
+        </div>
+        <h3 style="margin:6px 0 4px;">${it.prompt}</h3>
+        ${!showAnswers ? `
+          <textarea class="quiz-textarea" id="qta-${idx}" placeholder="Пиши формулировку здесь ИЛИ на листке бумаги от руки (как на реальном опросе)..."></textarea>
+        ` : `
+          ${prevNotes[idx] ? `<div style="margin:8px 0;padding:9px 12px;border-radius:9px;background:var(--surface-2);font-size:13.5px;"><strong>Твой черновик:</strong><br>${escapeHtml(prevNotes[idx]).replace(/\n/g,'<br>')}</div>` : ""}
+          <div style="margin-top:12px;padding-top:12px;border-top:2px dashed var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Эталонная формулировка:</div>
+            ${it.answer}
+            ${it.examNote ? `<div class="note-box">${it.examNote}</div>` : ""}
+            <div style="margin-top:12px;">
+              <div class="criteria-title">Отметь выполненные критерии (как преподаватель при проверке):</div>
+              ${it.criteria.map((c, ci) => `
+                <label class="rubric-check">
+                  <input type="checkbox" class="rubric-cb" data-q="${idx}" data-c="${ci}" onchange="recalcQuizScore()">
+                  <span>${c}</span>
+                </label>
+              `).join("")}
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+  }).join("");
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+}
+
+function finishQuiz(timeUp = false) {
+  quizFinished = true;
+  clearInterval(quizInterval);
+  document.getElementById("quizPauseBtn").style.display = "none";
+  document.getElementById("finishQuizBtn").style.display = "none";
+  renderQuizQuestions(true);
+  recalcQuizScore(timeUp);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+window.recalcQuizScore = function(timeUp = false) {
+  const cbs = Array.from(document.querySelectorAll(".rubric-cb"));
+  const total = cbs.length;
+  const checked = cbs.filter(c => c.checked).length;
+  const score10 = total ? ((checked / total) * 10).toFixed(1) : "0.0";
+  const pct = total ? Math.round((checked / total) * 100) : 0;
+
+  let verdict = "Отмечай галочками критерии ниже, чтобы посчитать балл.";
+  if (checked > 0) {
+    if (pct >= 90) verdict = "🔥 Превосходно! Уровень уверенной «десятки» на письменном экзамене.";
+    else if (pct >= 75) verdict = "👍 Хороший результат! Докрути пропущенные кванторы и детали.";
+    else if (pct >= 50) verdict = "🟡 База есть, но строгий преподаватель снизит баллы за пропуски.";
+    else verdict = "📌 Самое время прогнать эти карточки ещё пару раз!";
+  }
+
+  document.getElementById("quizScoreArea").innerHTML = `
+    <div class="score-banner">
+      <div>
+        <div style="font-size:12.5px;font-weight:700;text-transform:uppercase;color:var(--muted);">
+          ${timeUp ? "⏰ Время вышло! Самопроверка по критериям" : "Самопроверка по критериям"}
+        </div>
+        <div class="score-big">${score10} / 10 <span style="font-size:16px;font-weight:600;color:var(--muted);">(${checked} из ${total} критериев, ${pct}%)</span></div>
+        <div style="font-size:13.5px;margin-top:4px;">${verdict}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-amber" onclick="syncQuizToStatus()">💾 Обновить статусы по итогам</button>
+        <button class="btn btn-primary" onclick="restartQuiz()">🔄 Новый билет</button>
+      </div>
+    </div>
+  `;
+};
+
+window.syncQuizToStatus = function() {
+  let updatedReview = 0, updatedKnown = 0;
+  quizItems.forEach((it, idx) => {
+    const qCbs = Array.from(document.querySelectorAll(`.rubric-cb[data-q="${idx}"]`));
+    const allOk = qCbs.length > 0 && qCbs.every(c => c.checked);
+    const someOk = qCbs.some(c => c.checked);
+    if (allOk) { statuses[it.id] = "known"; updatedKnown++; }
+    else if (someOk) { statuses[it.id] = "review"; updatedReview++; }
+    else { statuses[it.id] = "hard"; updatedReview++; }
+  });
+  saveStatuses();
+  alert(`Статусы обновлены!\n• Выучено идеально: ${updatedKnown}\n• Отправлено на повторение: ${updatedReview}`);
+};
+
+window.restartQuiz = function() {
+  clearInterval(quizInterval);
+  document.getElementById("quizActiveView").style.display = "none";
+  document.getElementById("quizSetupView").style.display = "block";
+};
+
+document.getElementById("quizPauseBtn").addEventListener("click", () => {
+  quizPaused = !quizPaused;
+  document.getElementById("quizPauseBtn").textContent = quizPaused ? "▶ Продолжить" : "⏸ Пауза";
+});
+document.getElementById("finishQuizBtn").addEventListener("click", () => finishQuiz(false));
+document.getElementById("cancelQuizBtn").addEventListener("click", () => restartQuiz());
+
+// ===== TAB 4: FIXES =====
+function renderFixes() {
+  document.getElementById("fixesList").innerHTML = FIXES.map((f, i) => `
+    <div class="diff-card">
+      <div class="card-meta">
+        <span class="badge badge-warn">Поправка #${i + 1}</span>
+        <span class="badge badge-page">${f.page}</span>
+        <strong style="font-size:15px;">${f.topic}</strong>
+      </div>
+      <div class="diff-cols">
+        <div class="diff-bad">
+          <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--red);margin-bottom:4px;">✕ Как записано в тетради</div>
+          ${f.bad}
+        </div>
+        <div class="diff-good">
+          <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--green);margin-bottom:4px;">✓ Как правильно писать на опросе</div>
+          ${f.good}
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+// INIT
+initTheme();
+populateModules();
+updateStats();
+renderRef();
+renderFixes();
+</script>
+</body>
+</html>
